@@ -1,0 +1,18 @@
+name: MMLuck
+version: ${project.version}
+main: com.github.mori01231.mmluck.MMLuck
+api-version: 1.15
+
+commands:
+  mythicluckgive:
+    description: MythicLuckの基本コマンド。
+    aliases: [mlg, mythiclg, mythicluckg, mlgive]
+    usage: エラー。/mlg プレイヤー名 アイテム名 確率 個数 で使用できます。
+  mythicluckgiveoverflow:
+    description: MythicLuckの基本コマンド。
+    aliases: [mlgo, mythiclgo, mythicluckgo, mlgiveo,mlgoverflow]
+    usage: エラー。/mlgo プレイヤー名 アイテム名 確率 個数 で使用できます。
+
+permissions:
+  mythicluck.*:
+    description: MythicLuckの全コマンドへのアクセスを可能にする。
