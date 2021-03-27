@@ -7,12 +7,24 @@ commands:
   mythicluckgive:
     description: MythicLuckの基本コマンド。
     aliases: [mlg, mythiclg, mythicluckg, mlgive]
+    permission: MMLuck.mlg
     usage: エラー。/mlg プレイヤー名 アイテム名 確率 個数 で使用できます。
   mythicluckgiveoverflow:
     description: MythicLuckの基本コマンド。
     aliases: [mlgo, mythiclgo, mythicluckgo, mlgiveo,mlgoverflow]
+    permission: MMLuck.mlgo
     usage: エラー。/mlgo プレイヤー名 アイテム名 確率 個数 で使用できます。
 
 permissions:
-  mythicluck.*:
+  MMLuck.*:
     description: MythicLuckの全コマンドへのアクセスを可能にする。
+    default: false
+    children:
+      MMLuck.mlg: true
+      MMLuck.mlgo: true
+  MMLuck.mlg:
+    description: Allows you to use /mlg command.
+    default: false
+  MMLuck.mlgo:
+    description: Allows you to use /mlg command.
+    default: false
