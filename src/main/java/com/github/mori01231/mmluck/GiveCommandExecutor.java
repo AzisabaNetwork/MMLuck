@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Random;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getPlayer;
+import static org.bukkit.Bukkit.getServer;
 
 public class GiveCommandExecutor implements CommandExecutor {
     @Override
@@ -30,10 +31,16 @@ public class GiveCommandExecutor implements CommandExecutor {
 
         double mmItemChance;
         int mmItemNumber;
-        Player player = getPlayer(playerName);
+        Player player;
+        try{
+            player = getPlayer(playerName);
+        }catch(Exception e){
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
+            return true;
+        }
 
-        double luckNumber;
         // Acquire the luck value of the player
+        double luckNumber;
         try{
             luckNumber = player.getAttribute(Attribute.GENERIC_LUCK).getValue();
         }catch(Exception e){
@@ -70,7 +77,7 @@ public class GiveCommandExecutor implements CommandExecutor {
 
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = 100 + (int)Math.round(luckNumber * 1); // multiplier in %
+        int giveMultiplier = 100 + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
         if(giveOdds > 10000){

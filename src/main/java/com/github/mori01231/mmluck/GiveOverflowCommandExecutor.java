@@ -31,15 +31,22 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         double mmItemChance;
         int mmItemNumber;
-        Player player = getPlayer(playerName);
+        Player player;
+        try{
+            player = getPlayer(playerName);
+        }catch(Exception e){
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
+            return true;
+        }
 
         // Acquire the luck value of the player
         double luckNumber;
         try{
             luckNumber = player.getAttribute(Attribute.GENERIC_LUCK).getValue();
         }catch(Exception e){
-            luckNumber = 0;
+            luckNumber = 0.0;
         }
+
 
         // Only for debug to determine if the correct luck value is read by plugin
         //sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(luckNumber)));
