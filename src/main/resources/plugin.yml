@@ -18,7 +18,7 @@ commands:
 permissions:
   MMLuck.*:
     description: MythicLuckの全コマンドへのアクセスを可能にする。
-    default: false
+    default: true
     children:
       MMLuck.mlg: true
       MMLuck.mlgo: true
