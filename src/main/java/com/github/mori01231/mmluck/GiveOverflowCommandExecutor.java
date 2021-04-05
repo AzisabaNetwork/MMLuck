@@ -100,8 +100,9 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         int rand_int1 = rand.nextInt(10000);
 
         // If the random number is lower than than the chance of getting item, give item.
+        mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + mmItemNumber;
+        Log("Player : " + playerName + " Item : " + mmItemName +" Chance : " +  giveOdds / 100.0 + "% Give command : " + mmGiveString);
         if (rand_int1 < giveOdds){
-            mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + mmItemNumber;
             sendCommand(mmGiveString);
 
             // Used for debug only
