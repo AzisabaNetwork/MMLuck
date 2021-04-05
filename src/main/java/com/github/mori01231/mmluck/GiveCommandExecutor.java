@@ -119,4 +119,8 @@ public class GiveCommandExecutor implements CommandExecutor {
             player.sendActionBar('&',message);
         }
     }
+
+    public void Log(String message){
+        getServer().getConsoleSender().sendMessage(message);
+    }
 }
