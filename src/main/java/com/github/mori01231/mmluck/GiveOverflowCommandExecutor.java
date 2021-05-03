@@ -34,6 +34,10 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         Player player;
         try{
             player = getPlayer(playerName);
+            if(player == null){
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
+                return true;
+            }
         }catch(Exception e){
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
             return true;
