@@ -17,6 +17,7 @@ public class GiveCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Usage /mlg プレイヤー名 アイテム名 確率 個数
         // 確率は少数で指定
+        int boostPercentage = MMLuck.getInstance().GetBoostValue();
 
         // declare those variables!
         String playerName;
@@ -81,13 +82,13 @@ public class GiveCommandExecutor implements CommandExecutor {
 
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = 100 + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
+        int giveMultiplier = 100 + boostPercentage + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
         if(giveOdds > 10000){
             giveOdds = 10000;
         }
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%");
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "% (現在のブースト : +" + boostPercentage +"% )");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         // Generate random number
