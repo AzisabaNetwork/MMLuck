@@ -4,6 +4,7 @@ import com.github.mori01231.mmluck.utils.ListStore;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.sql.Connection;
 
 public final class MMLuck extends JavaPlugin {
 
@@ -21,6 +22,8 @@ public final class MMLuck extends JavaPlugin {
     public static MMLuck getInstance() {
         return instance;
     }
+
+    public Connection connection;
 
     @Override
     public void onEnable() {
@@ -41,6 +44,15 @@ public final class MMLuck extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        try { //using a try catch to catch connection errors (like wrong sql password...)
+            if (connection!=null && !connection.isClosed()){ //checking if connection isn't null to
+                //avoid receiving a nullpointer
+                connection.close(); //closing the connection field variable.
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         getLogger().info("MythicLuck has been disabled.");
     }
 
