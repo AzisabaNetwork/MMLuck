@@ -8,7 +8,7 @@ import java.io.File;
 public final class MMLuck extends JavaPlugin {
 
     private int boostPercentage;
-    private Long lastBoostPercentageCalculated;
+    private Long lastBoostPercentageCalculated = 0l;
 
     public ListStore BoostTimes;
 
@@ -33,7 +33,7 @@ public final class MMLuck extends JavaPlugin {
         String pluginFolder = this.getDataFolder().getAbsolutePath();
         (new File(pluginFolder)).mkdirs();
 
-        this.BoostTimes = new ListStore(new File(pluginFolder + File.separator + "HalloweenVoteSum.txt"));
+        this.BoostTimes = new ListStore(new File(pluginFolder + File.separator + "BoostData.txt"));
         this.BoostTimes.Load();
         RemoveExpiredBoost();
     }

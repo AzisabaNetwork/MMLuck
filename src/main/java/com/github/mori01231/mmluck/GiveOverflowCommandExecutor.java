@@ -19,6 +19,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         // 確率は少数で指定
 
         // declare those variables!
+        int boostPercentage = MMLuck.getInstance().GetBoostValue();
         String playerName;
         String mmItemName;
         try{
@@ -81,10 +82,12 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = 100 + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
+        int giveMultiplier = 100 + boostPercentage + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%");
+        double boostMult = 1 + boostPercentage/100.0;
+
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "% (現在のブースト : ドロップ確率" + boostMult +"倍 )");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         String mmGiveString;

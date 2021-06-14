@@ -15,11 +15,11 @@ import static org.bukkit.Bukkit.getServer;
 public class GiveCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Usage /mlg プレイヤー名 アイテム名 確率 個数
+        // Usage /mlg プレイヤー名 アイテム名 個数 確率
         // 確率は少数で指定
-        int boostPercentage = MMLuck.getInstance().GetBoostValue();
 
         // declare those variables!
+        int boostPercentage = MMLuck.getInstance().GetBoostValue();
         String playerName;
         String mmItemName;
         try{
@@ -88,7 +88,10 @@ public class GiveCommandExecutor implements CommandExecutor {
         if(giveOdds > 10000){
             giveOdds = 10000;
         }
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "% (現在のブースト : +" + boostPercentage +"% )");
+
+        double boostMult = 1 + boostPercentage/100.0;
+
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "% (現在のブースト : ドロップ確率" + boostMult +"倍 )");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         // Generate random number

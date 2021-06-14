@@ -14,6 +14,11 @@ commands:
     aliases: [mlgo, mythiclgo, mythicluckgo, mlgiveo,mlgoverflow]
     permission: MMLuck.mlgo
     usage: エラー。/mlgo プレイヤー名 アイテム名 確率 個数 で使用できます。
+  addboosttime:
+    description: ドロップ率ブーストを追加。
+    aliases: [abt]
+    permission: MMLuck.abt
+    usage: エラー。/abt 効果時間(秒) 効果レベル（%）で使用できます。
 
 permissions:
   MMLuck.*:
@@ -22,9 +27,13 @@ permissions:
     children:
       MMLuck.mlg: true
       MMLuck.mlgo: true
+      MMLuck.abt: true
   MMLuck.mlg:
     description: Allows you to use /mlg command.
     default: false
   MMLuck.mlgo:
-    description: Allows you to use /mlg command.
+    description: Allows you to use /mlgo command.
+    default: false
+  MMLuck.abt:
+    description: Allows you to use /abt command.
     default: false
