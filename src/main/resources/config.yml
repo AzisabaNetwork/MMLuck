@@ -4,5 +4,6 @@
 host: localhost
 port: 3306
 database: MMLuck
+table: MMLuck
 username: username
 password: password
