@@ -27,7 +27,7 @@ public class BoostHolder {
         }
 
         // check if enough time has elapsed since last refresh
-        if(lastRefreshTime > System.currentTimeMillis() - 5000){
+        if(lastRefreshTime > System.currentTimeMillis() - 1000){
             return totalBoostPercentage;
         }
         lastRefreshTime = System.currentTimeMillis();
@@ -111,7 +111,7 @@ public class BoostHolder {
                     while(dataList.next()){
                         Long startTime = dataList.getLong(1);
                         Long duration = dataList.getLong(2);
-                        if((System.currentTimeMillis() - startTime) > duration){
+                        if((System.currentTimeMillis() - startTime) > duration * 1000){
                             statement.executeUpdate("DELETE FROM " + database + "." + TableName + " WHERE StartTime = " + startTime + ";");
                         }
                     }

@@ -33,6 +33,7 @@ public final class MMLuck extends JavaPlugin {
         this.getCommand("mythicluckgive").setExecutor(new GiveCommandExecutor());
         this.getCommand("mythicluckgiveoverflow").setExecutor(new GiveOverflowCommandExecutor());
         this.getCommand("addboosttime").setExecutor(new AddBoostTimeCommandExecutor());
+        this.getCommand("broadcastboost").setExecutor(new BroadcastBoostCommandExecutor());
 
         this.saveDefaultConfig();
 
@@ -42,8 +43,8 @@ public final class MMLuck extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                //boostHolder.refreshAndGetPercentage();
-                Bukkit.broadcastMessage("Current percentage: " + boostHolder.refreshAndGetPercentage());
+                boostHolder.refreshAndGetPercentage();
+                //Bukkit.broadcastMessage("Current percentage: " + boostHolder.refreshAndGetPercentage());
 
             }
         }, 0L, 100L); //0 Tick initial delay, 100 Tick (5 Second) between repeats

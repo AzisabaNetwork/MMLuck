@@ -19,6 +19,10 @@ commands:
     aliases: [abt]
     permission: MMLuck.abt
     usage: エラー。/abt 効果時間(秒) 効果レベル（%）で使用できます。
+  broadcastboost:
+    description: ドロップ率ブーストを鯖内にアナウンス。
+    permission: MMLuck.broadcastboost
+    usage: エラー。/broadcastboost で使用できます。
 
 permissions:
   MMLuck.*:
@@ -28,6 +32,7 @@ permissions:
       MMLuck.mlg: true
       MMLuck.mlgo: true
       MMLuck.abt: true
+      MMLuck.broadcastboost: true
   MMLuck.mlg:
     description: Allows you to use /mlg command.
     default: false
@@ -36,4 +41,7 @@ permissions:
     default: false
   MMLuck.abt:
     description: Allows you to use /abt command.
+    default: false
+  MMLuck.broadcastboost:
+    description: Allows you to use /broadcastboost command.
     default: false
