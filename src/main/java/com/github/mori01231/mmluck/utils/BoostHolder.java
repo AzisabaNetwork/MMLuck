@@ -1,6 +1,7 @@
 package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.MMLuck;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -111,7 +112,7 @@ public class BoostHolder {
                         Long startTime = dataList.getLong(1);
                         Long duration = dataList.getLong(2);
                         if((System.currentTimeMillis() - startTime) > duration){
-                            ResultSet deletedRow = statement.executeQuery("DELETE FROM " + database + "." + TableName + " WHERE StartTime = " + startTime + ";");
+                            statement.executeUpdate("DELETE FROM " + database + "." + TableName + " WHERE StartTime = " + startTime + ";");
                         }
                     }
 

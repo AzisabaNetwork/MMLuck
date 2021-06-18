@@ -1,6 +1,7 @@
 package com.github.mori01231.mmluck;
 
 import com.github.mori01231.mmluck.utils.BoostHolder;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -37,6 +38,15 @@ public final class MMLuck extends JavaPlugin {
 
         this.boostHolder = new BoostHolder();
         boostHolder.refreshAndGetPercentage();
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                //boostHolder.refreshAndGetPercentage();
+                Bukkit.broadcastMessage("Current percentage: " + boostHolder.refreshAndGetPercentage());
+
+            }
+        }, 0L, 100L); //0 Tick initial delay, 100 Tick (5 Second) between repeats
     }
 
     @Override
