@@ -87,7 +87,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         double boostMult = 1 + boostPercentage/100.0;
 
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "% (現在のブースト : ドロップ確率" + boostMult +"倍 )");
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率&d" + boostMult +"倍");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         String mmGiveString;
