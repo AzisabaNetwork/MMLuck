@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Random;
 
-import static org.bukkit.Bukkit.getPlayer;
-import static org.bukkit.Bukkit.getServer;
+import static org.bukkit.Bukkit.*;
 
 public class GiveOverflowCommandExecutor implements CommandExecutor {
     @Override
@@ -20,6 +19,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         // declare those variables!
         int boostPercentage = Math.toIntExact(MMLuck.getInstance().boostHolder.refreshAndGetPercentage());
+
         String playerName;
         String mmItemName;
         try{

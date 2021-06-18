@@ -47,7 +47,7 @@ public class BoostHolder {
         // calculate the boost percentage
         Long boostPercentage = 0l;
         for(int i=0; i<boostTimes.size();i++){
-            boostPercentage += boostTimes.get(i).get(0);
+            boostPercentage += boostTimes.get(i).get(2);
         }
         // update the boost percentage
         totalBoostPercentage = boostPercentage;
