@@ -73,7 +73,7 @@ public class BoostHolder {
 
                     ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
                     if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` UNSIGNED BIGINT, `Duration` UNSIGNED BIGINT, `Percentage` UNSIGNED BIGINT)");
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                     }
 
                     statement.executeUpdate("INSERT INTO " + TableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
@@ -102,7 +102,7 @@ public class BoostHolder {
 
                     ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
                     if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` UNSIGNED BIGINT, `Duration` UNSIGNED BIGINT, `Percentage` UNSIGNED BIGINT)");
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                         return;
                     }
 
@@ -138,7 +138,7 @@ public class BoostHolder {
                     // make sure table exists
                     ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
                     if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` UNSIGNED BIGINT, `Duration` UNSIGNED BIGINT, `Percentage` UNSIGNED BIGINT)");
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                         return;
                     }
                     // clear boost times builder
