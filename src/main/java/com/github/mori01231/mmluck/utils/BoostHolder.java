@@ -21,6 +21,10 @@ public class BoostHolder {
 
 
     public Long refreshAndGetPercentage(){
+        if(lastRefreshTime == null){
+            lastRefreshTime = 0l;
+        }
+
         // check if enough time has elapsed since last refresh
         if(lastRefreshTime > System.currentTimeMillis() - 5000){
             return totalBoostPercentage;
