@@ -19,7 +19,7 @@ public class GiveCommandExecutor implements CommandExecutor {
         // 確率は少数で指定
 
         // declare those variables!
-        int boostPercentage = MMLuck.getInstance().GetBoostValue();
+        int boostPercentage = Math.toIntExact(MMLuck.getInstance().boostHolder.refreshAndGetPercentage());
         String playerName;
         String mmItemName;
         try{
