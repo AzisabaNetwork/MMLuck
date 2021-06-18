@@ -20,16 +20,6 @@ public class BoostHolder {
     private int port;
 
 
-    public ArrayList<Long> createNewBoost(Long startTime, Long duration, Long percentage){
-        ArrayList<Long> boost = new ArrayList<>();
-        boost.add(startTime);
-        boost.add(duration);
-        boost.add(percentage);
-
-        return boost;
-    }
-
-
     public Long refreshAndGetPercentage(){
         // check if enough time has elapsed since last refresh
         if(lastRefreshTime > System.currentTimeMillis() - 5000){
@@ -60,13 +50,13 @@ public class BoostHolder {
     }
 
     // MySQL methods
-    public void addBoost(ArrayList<Long> boost){
+    public void addBoost(Long startTime, Long duration, Long percentage){
+        ArrayList<Long> boost = new ArrayList<>();
+        boost.add(startTime);
+        boost.add(duration);
+        boost.add(percentage);
         boostTimes.add(boost);
 
-        // declare variables
-        Long currentTime = boost.get(0);
-        Long duration = boost.get(1);
-        Long percentage = boost.get(2);
         // add boost to database
         BukkitRunnable r = new BukkitRunnable() {
             @Override
@@ -82,7 +72,7 @@ public class BoostHolder {
                         statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` UNSIGNED BIGINT, `Duration` UNSIGNED BIGINT, `Percentage` UNSIGNED BIGINT)");
                     }
 
-                    statement.executeUpdate("INSERT INTO " + TableName + " (StartTime, Duration, Percentage) VALUES ('" + currentTime + "', '" + duration + "', '" + percentage + "');");
+                    statement.executeUpdate("INSERT INTO " + TableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
 
                 } catch(ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
@@ -157,9 +147,14 @@ public class BoostHolder {
                         Long startTime = dataList.getLong(1);
                         Long duration = dataList.getLong(2);
                         Long percentage = dataList.getLong(3);
-                        // create new boost
-                        ArrayList newBoost = createNewBoost(startTime,duration,percentage);
 
+                        // create new boost
+                        ArrayList<Long> newBoost = new ArrayList<>();
+                        newBoost.add(startTime);
+                        newBoost.add(duration);
+                        newBoost.add(percentage);
+
+                        // add to boost times builder
                         boostTimesBuilder.add(newBoost);
                     }
 

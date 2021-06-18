@@ -1,5 +1,6 @@
 package com.github.mori01231.mmluck;
 
+import com.github.mori01231.mmluck.utils.BoostHolder;
 import com.github.mori01231.mmluck.utils.ListStore;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,6 +13,8 @@ public final class MMLuck extends JavaPlugin {
     private Long lastBoostPercentageCalculated = 0l;
 
     public ListStore BoostTimes;
+
+    public BoostHolder boostHolder;
 
     private static MMLuck instance;
 
@@ -35,6 +38,10 @@ public final class MMLuck extends JavaPlugin {
 
         String pluginFolder = this.getDataFolder().getAbsolutePath();
         (new File(pluginFolder)).mkdirs();
+
+
+        this.boostHolder = new BoostHolder();
+        boostHolder.refreshAndGetPercentage();
 
         this.BoostTimes = new ListStore(new File(pluginFolder + File.separator + "BoostData.txt"));
         this.BoostTimes.Load();
