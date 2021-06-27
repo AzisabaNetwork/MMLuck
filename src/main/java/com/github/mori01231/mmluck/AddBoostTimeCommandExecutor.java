@@ -15,7 +15,7 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
     private Boolean isConsole;
     Player player;
 
-
+    // /addboosttime [duration] [percentage]
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
