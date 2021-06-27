@@ -85,16 +85,14 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         int giveMultiplier = 100 + boostPercentage + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
-        double boostMult = 1 + boostPercentage/100.0;
-
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率&d" + boostMult +"倍");
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率補正&f&l +" + boostPercentage +"%");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         String mmGiveString;
         int firstGiveNumber = 0;
         while(giveOdds > 10000){
             giveOdds -= 10000;
-            firstGiveNumber += 1;
+            firstGiveNumber += 1 * mmItemNumber;
         }
         if(firstGiveNumber > 0){
             mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + firstGiveNumber;

@@ -89,9 +89,7 @@ public class GiveCommandExecutor implements CommandExecutor {
             giveOdds = 10000;
         }
 
-        double boostMult = 1 + boostPercentage/100.0;
-
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率&d" + boostMult +"倍");
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率補正 &f&l+" + boostPercentage +"%");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         // Generate random number
