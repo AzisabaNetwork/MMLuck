@@ -120,8 +120,6 @@ public class GiveCommandExecutor implements CommandExecutor {
     public void sendMessage(CommandSender sender, Player player, String message){
         if(sender instanceof Player){
             player.sendActionBar('&',message);
-        }else{
-            sender.sendMessage(message);
         }
 
         if(!player.equals(sender)){
