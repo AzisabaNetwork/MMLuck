@@ -20,6 +20,8 @@ public class GiveCommandExecutor implements CommandExecutor {
 
         // declare those variables!
         int boostPercentage = Math.toIntExact(MMLuck.getInstance().boostHolder.refreshAndGetPercentage());
+        float boostMulti = (boostPercentage + 100)/100.0f;
+
         String playerName;
         String mmItemName;
         try{
@@ -82,7 +84,7 @@ public class GiveCommandExecutor implements CommandExecutor {
 
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = 100 + boostPercentage + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
+        int giveMultiplier = (int) Math.round((100 + luckNumber) * boostMulti); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
         if(giveOdds > 10000){

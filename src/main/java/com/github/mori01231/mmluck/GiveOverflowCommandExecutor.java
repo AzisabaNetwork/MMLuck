@@ -19,6 +19,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         // declare those variables!
         int boostPercentage = Math.toIntExact(MMLuck.getInstance().boostHolder.refreshAndGetPercentage());
+        float boostMulti = (boostPercentage + 100)/100.0f;
 
         String playerName;
         String mmItemName;
@@ -82,7 +83,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = 100 + boostPercentage + (int)Math.round(luckNumber * 1); // multiplier in 0-100%
+        int giveMultiplier = (int) Math.round((100 + luckNumber) * boostMulti); // multiplier in 0-100%
         int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
 
         sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト : ドロップ確率補正&f&l +" + boostPercentage +"%");

@@ -4,7 +4,6 @@ import com.github.mori01231.mmluck.utils.BoostHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.sql.Connection;
 
 public final class MMLuck extends JavaPlugin {
