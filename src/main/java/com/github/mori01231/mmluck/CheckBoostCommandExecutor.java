@@ -11,9 +11,6 @@ public class CheckBoostCommandExecutor implements CommandExecutor {
 
         Long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
 
-        if(boostPercentage == 0l)
-            return true;
-
         float boostMulti = (boostPercentage + 100)/100.0f;
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&3現在ドロップブースト倍率が &f&l" + boostMulti + "倍&3になっています！"));
