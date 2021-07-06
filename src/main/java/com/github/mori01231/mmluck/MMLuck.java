@@ -33,6 +33,7 @@ public final class MMLuck extends JavaPlugin {
         this.getCommand("mythicluckgiveoverflow").setExecutor(new GiveOverflowCommandExecutor());
         this.getCommand("addboosttime").setExecutor(new AddBoostTimeCommandExecutor());
         this.getCommand("broadcastboost").setExecutor(new BroadcastBoostCommandExecutor());
+        this.getCommand("checkboost").setExecutor(new CheckBoostCommandExecutor());
 
         this.saveDefaultConfig();
 
