@@ -23,6 +23,11 @@ commands:
     description: ドロップ率ブーストを鯖内にアナウンス。
     permission: MMLuck.broadcastboost
     usage: エラー。/broadcastboost で使用できます。
+  checkboost:
+    description: ドロップ率ブーストを確認。
+    aliases: [cb]
+    permission: MMLuck.checkboost
+    usage: エラー。/checkboost で使用できます。
 
 permissions:
   MMLuck.*:
@@ -33,6 +38,7 @@ permissions:
       MMLuck.mlgo: true
       MMLuck.abt: true
       MMLuck.broadcastboost: true
+      MMLuck.checkboost: true
   MMLuck.mlg:
     description: Allows you to use /mlg command.
     default: false
@@ -44,4 +50,7 @@ permissions:
     default: false
   MMLuck.broadcastboost:
     description: Allows you to use /broadcastboost command.
+    default: false
+  MMLuck.checkboost:
+    description: Allows you to use /checkboost command.
     default: false
