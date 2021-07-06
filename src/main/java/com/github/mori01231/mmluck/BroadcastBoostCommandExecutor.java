@@ -15,7 +15,9 @@ public class BroadcastBoostCommandExecutor implements CommandExecutor {
         if(boostPercentage == 0l)
             return true;
 
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&3現在ドロップ率が &f&l+" + boostPercentage + "%&3になっています！"));
+        float boostMulti = (boostPercentage + 100)/100.0f;
+
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&3現在ドロップブースト倍率が &f&l+" + boostMulti + "倍&3になっています！"));
 
 
         return true;
