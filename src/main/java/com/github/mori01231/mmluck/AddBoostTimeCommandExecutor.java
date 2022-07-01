@@ -48,6 +48,7 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
                 MMLuck.getInstance().getLogger().warning("Tried to refund the booster item but the sender is not a player");
                 MMLuck.getInstance().getLogger().warning("Duration: " + duration + ", Percentage: " + percentage);
             }
+            return true;
         }
 
         // add boost to boostHolder
