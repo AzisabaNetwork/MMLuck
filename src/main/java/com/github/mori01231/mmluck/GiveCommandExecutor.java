@@ -98,8 +98,13 @@ public class GiveCommandExecutor implements CommandExecutor {
         Random rand = new Random();
         int rand_int1 = rand.nextInt(10000);
 
-        // If the random number is lower than than the chance of getting item, give item.
-        String mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + mmItemNumber;
+        // Check silent mode
+        String silent = "";
+        if (MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId())) {
+            silent = "-s ";
+        }
+        // If the random number is lower than the chance of getting item, give item.
+        String mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
         Log("Player : " + playerName + " Item : " + mmItemName +" Chance : " +  giveOdds / 100.0 + "% Give command : " + mmGiveString);
         if (rand_int1 < giveOdds){
             sendCommand(mmGiveString);

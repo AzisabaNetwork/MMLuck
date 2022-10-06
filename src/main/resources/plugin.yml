@@ -28,6 +28,9 @@ commands:
     aliases: [cb]
     permission: MMLuck.checkboost
     usage: エラー。/checkboost で使用できます。
+  mythiclucksilent:
+    aliases: [mls, mythicls, mythiclucks, mmlucksilent]
+    permission: MMLuck.mls
 
 permissions:
   MMLuck.*:
@@ -54,3 +57,6 @@ permissions:
   MMLuck.checkboost:
     description: Allows you to use /checkboost command.
     default: false
+  MMLuck.mls:
+    description: "Allows you to use /mls command."
+    default: true

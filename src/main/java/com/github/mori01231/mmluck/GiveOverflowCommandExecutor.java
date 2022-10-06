@@ -89,6 +89,12 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト倍率 : &f&l+" + boostMulti +"倍");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
+        // Check silent mode
+        String silent = "";
+        if (MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId())) {
+            silent = "-s ";
+        }
+
         String mmGiveString;
         int firstGiveNumber = 0;
         while(giveOdds > 10000){
@@ -96,7 +102,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             firstGiveNumber += 1 * mmItemNumber;
         }
         if(firstGiveNumber > 0){
-            mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + firstGiveNumber;
+            mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + firstGiveNumber;
             sendCommand(mmGiveString);
         }
 
@@ -105,8 +111,8 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         Random rand = new Random();
         int rand_int1 = rand.nextInt(10000);
 
-        // If the random number is lower than than the chance of getting item, give item.
-        mmGiveString = "mm i give " + playerName + " " + mmItemName + " " + mmItemNumber;
+        // If the random number is lower than the chance of getting item, give item.
+        mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
         Log("Player : " + playerName + " Item : " + mmItemName +" Chance : " +  giveOdds / 100.0 + "% Give command : " + mmGiveString);
         if (rand_int1 < giveOdds){
             sendCommand(mmGiveString);

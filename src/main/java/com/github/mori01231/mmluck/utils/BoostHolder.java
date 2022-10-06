@@ -1,29 +1,83 @@
 package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.MMLuck;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BoostHolder {
 
     private ArrayList<ArrayList<Long>> boostTimes = new ArrayList<>();
     private ArrayList<ArrayList<Long>> boostTimesBuilder = new ArrayList<>();
+    public final Map<UUID, Boolean> silentMode = new ConcurrentHashMap<>();
 
     private Long totalBoostPercentage;
 
     private Long lastRefreshTime;
 
     public Connection connection;
-    private String host, database, TableName, username, password;
+    private String host, database, tableName, playersTableName, username, password;
     private int port;
 
+    public BoostHolder() {
+        try {
+            openConnection();
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + playersTableName + "'");
+                if (!result.next()) {
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + playersTableName + "` (`id` VARCHAR(36) NOT NULL, `silent` BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (`id`))");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isSilentMode(UUID uuid) {
+        if (silentMode.containsKey(uuid)) {
+            return silentMode.get(uuid);
+        }
+        try {
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT `silent` FROM `" + playersTableName + "` WHERE `id` = ?")) {
+                stmt.setString(1, uuid.toString());
+                ResultSet result = stmt.executeQuery();
+                boolean flag;
+                if (result.next()) {
+                    flag = result.getBoolean("silent");
+                } else {
+                    flag = false;
+                }
+                silentMode.put(uuid, flag);
+                return flag;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setSilentMode(UUID uuid, boolean silent) {
+        try {
+            silentMode.put(uuid, silent);
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO `" + playersTableName + "` (`id`, `silent`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `silent` = ?")) {
+                stmt.setString(1, uuid.toString());
+                stmt.setBoolean(2, silent);
+                stmt.setBoolean(3, silent);
+                stmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Long refreshAndGetPercentage(){
         if(lastRefreshTime == null){
-            lastRefreshTime = 0l;
+            lastRefreshTime = 0L;
         }
 
         // check if enough time has elapsed since last refresh
@@ -46,9 +100,9 @@ public class BoostHolder {
 
     private void updateBoostPercentage(){
         // calculate the boost percentage
-        Long boostPercentage = 0l;
-        for(int i=0; i<boostTimes.size();i++){
-            boostPercentage += boostTimes.get(i).get(2);
+        long boostPercentage = 0L;
+        for (ArrayList<Long> boostTime : boostTimes) {
+            boostPercentage += boostTime.get(2);
         }
         // update the boost percentage
         totalBoostPercentage = boostPercentage;
@@ -72,12 +126,12 @@ public class BoostHolder {
                     openConnection();
                     Statement statement = connection.createStatement();
 
-                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
-                    if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
+                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+                    if (!result.next()) {
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                     }
 
-                    statement.executeUpdate("INSERT INTO " + TableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
+                    statement.executeUpdate("INSERT INTO " + tableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
 
                 } catch(ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
@@ -85,7 +139,6 @@ public class BoostHolder {
             }
         };
         r.runTaskAsynchronously(MMLuck.getInstance());
-        return;
     }
 
     // go through database and delete any boosts where duration + startTime > currentTime
@@ -101,18 +154,18 @@ public class BoostHolder {
                     openConnection();
                     Statement statement = connection.createStatement();
 
-                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
-                    if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
+                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+                    if (!result.next()) {
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                         return;
                     }
 
-                    ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + TableName + ";");
+                    ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + tableName + ";");
                     while(dataList.next()){
-                        Long startTime = dataList.getLong(1);
-                        Long duration = dataList.getLong(2);
+                        long startTime = dataList.getLong(1);
+                        long duration = dataList.getLong(2);
                         if((System.currentTimeMillis() - startTime) > duration * 1000){
-                            statement.executeUpdate("DELETE FROM " + database + "." + TableName + " WHERE StartTime = " + startTime + ";");
+                            statement.executeUpdate("DELETE FROM " + database + "." + tableName + " WHERE StartTime = " + startTime + ";");
                         }
                     }
 
@@ -122,7 +175,6 @@ public class BoostHolder {
             }
         };
         r.runTaskAsynchronously(MMLuck.getInstance());
-        return;
     }
 
     // get info from database and update local arraylist
@@ -137,21 +189,21 @@ public class BoostHolder {
                     openConnection();
                     Statement statement = connection.createStatement();
                     // make sure table exists
-                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + TableName + "';");
-                    if (result.next() == false) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + TableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
+                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+                    if (!result.next()) {
+                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                         return;
                     }
                     // clear boost times builder
                     boostTimesBuilder.clear();
 
                     // populate boost times builder with updated data
-                    ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + TableName + ";");
+                    ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + tableName + ";");
                     while(dataList.next()){
                         // get info
-                        Long startTime = dataList.getLong(1);
-                        Long duration = dataList.getLong(2);
-                        Long percentage = dataList.getLong(3);
+                        long startTime = dataList.getLong(1);
+                        long duration = dataList.getLong(2);
+                        long percentage = dataList.getLong(3);
 
                         // create new boost
                         ArrayList<Long> newBoost = new ArrayList<>();
@@ -172,7 +224,6 @@ public class BoostHolder {
             }
         };
         r.runTaskAsynchronously(MMLuck.getInstance());
-        return;
     }
 
 
@@ -181,7 +232,8 @@ public class BoostHolder {
         host = MMLuck.getInstance().getConfig().getString("host");
         port = MMLuck.getInstance().getConfig().getInt("port");
         database = MMLuck.getInstance().getConfig().getString("database");
-        TableName = MMLuck.getInstance().getConfig().getString("table");
+        tableName = MMLuck.getInstance().getConfig().getString("table");
+        playersTableName = MMLuck.getInstance().getConfig().getString("players-table", "mmluck_players");
         username = MMLuck.getInstance().getConfig().getString("username");
         password = MMLuck.getInstance().getConfig().getString("password");
 
