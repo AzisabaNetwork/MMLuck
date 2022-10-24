@@ -1,5 +1,7 @@
 package com.github.mori01231.mmluck;
 
+import com.github.mori01231.mmluck.listener.MMCommandListener;
+import com.github.mori01231.mmluck.listener.PlayerListener;
 import com.github.mori01231.mmluck.utils.BoostHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +37,9 @@ public final class MMLuck extends JavaPlugin {
         this.getCommand("broadcastboost").setExecutor(new BroadcastBoostCommandExecutor());
         this.getCommand("checkboost").setExecutor(new CheckBoostCommandExecutor());
         this.getCommand("mythiclucksilent").setExecutor(new SilentCommand());
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MMCommandListener(), this);
 
         this.saveDefaultConfig();
 
