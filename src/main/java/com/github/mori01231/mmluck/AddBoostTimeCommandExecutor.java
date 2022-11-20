@@ -37,13 +37,13 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        if (MMLuck.getInstance().boostHolder.refreshAndGetPercentage() >= 200) { // drop boosted by +200% or more (so player has 300%+ luck by boost)
+        if (MMLuck.getInstance().boostHolder.refreshAndGetPercentage() >= 125) { // luck boosted by +125% or more (effectively capped at +200%)
             if (player != null) {
                 String mmId = getMMId(duration, percentage);
                 String cmd = "mm i give " + player.getName() + " " + mmId;
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
                 MMLuck.getInstance().getLogger().info("Executed " + cmd);
-                player.sendMessage(ChatColor.RED + "すでにブースト倍率が3倍以上のため、これ以上ブーストを追加できません。");
+                player.sendMessage(ChatColor.RED + "すでにブースト倍率が2.25倍以上のため、これ以上ブーストを追加できません。");
             } else {
                 MMLuck.getInstance().getLogger().warning("Tried to refund the booster item but the sender is not a player");
                 MMLuck.getInstance().getLogger().warning("Duration: " + duration + ", Percentage: " + percentage);
