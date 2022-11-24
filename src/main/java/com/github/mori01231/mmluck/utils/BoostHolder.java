@@ -1,6 +1,8 @@
 package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.MMLuck;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -164,8 +166,14 @@ public class BoostHolder {
                     while(dataList.next()){
                         long startTime = dataList.getLong(1);
                         long duration = dataList.getLong(2);
+                        long percentage = dataList.getLong(3);
                         if((System.currentTimeMillis() - startTime) > duration * 1000){
                             statement.executeUpdate("DELETE FROM " + database + "." + tableName + " WHERE StartTime = " + startTime + ";");
+                            Bukkit.getScheduler().runTask(
+                                    MMLuck.getInstance(),
+                                    () ->
+                                            Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.WHITE +
+                                                    "+" + percentage + "%" + ChatColor.LIGHT_PURPLE + "のブーストが期限切れになりました。"));
                         }
                     }
 
