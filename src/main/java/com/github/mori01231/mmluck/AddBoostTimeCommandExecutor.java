@@ -66,7 +66,7 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
         Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.WHITE + ChatColor.BOLD + sender.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "が" +
                 ChatColor.WHITE + ChatColor.BOLD + sp + "%" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "ブーストを使用しました！" + ChatColor.GRAY + "(" + minutes + "分間有効)");
 
-        float boostMulti = (boostPercentage + 100)/100.0f;
+        float boostMulti = (percentage + boostPercentage + 100)/100.0f;
 
         Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.LIGHT_PURPLE + "現在のブースト倍率は" + ChatColor.WHITE + ChatColor.BOLD + boostMulti + ChatColor.LIGHT_PURPLE + "倍です！");
 
