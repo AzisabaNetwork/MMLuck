@@ -59,8 +59,12 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
 
         float minutes = durationSeconds / 60.0f;
 
+        String sp = Long.toString(percentage);
+        if (percentage >= 0) {
+            sp = "+" + sp;
+        }
         Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.WHITE + ChatColor.BOLD + sender.getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "が" +
-                ChatColor.WHITE + ChatColor.BOLD + "+" + percentage + "%" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "ブーストを使用しました！" + ChatColor.GRAY + "(" + minutes + "分間有効)");
+                ChatColor.WHITE + ChatColor.BOLD + sp + "%" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "ブーストを使用しました！" + ChatColor.GRAY + "(" + minutes + "分間有効)");
 
         float boostMulti = (boostPercentage + 100)/100.0f;
 

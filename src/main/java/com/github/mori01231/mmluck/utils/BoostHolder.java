@@ -169,11 +169,16 @@ public class BoostHolder {
                         long percentage = dataList.getLong(3);
                         if((System.currentTimeMillis() - startTime) > duration * 1000){
                             statement.executeUpdate("DELETE FROM " + database + "." + tableName + " WHERE StartTime = " + startTime + ";");
+                            String sp = Long.toString(percentage);
+                            if (percentage >= 0) {
+                                sp = "+" + sp;
+                            }
+                            String finalSp = sp;
                             Bukkit.getScheduler().runTask(
                                     MMLuck.getInstance(),
                                     () ->
                                             Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.WHITE +
-                                                    "+" + percentage + "%" + ChatColor.LIGHT_PURPLE + "のブーストが期限切れになりました。"));
+                                                    finalSp + "%" + ChatColor.LIGHT_PURPLE + "のブーストが期限切れになりました。"));
                         }
                     }
 
