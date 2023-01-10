@@ -11,17 +11,10 @@ import static org.bukkit.Bukkit.getLogger;
 
 public class AddBoostTimeCommandExecutor implements CommandExecutor {
 
-    // /addboosttime [duration] [percentage]
+    // /addboosttime [duration] [percentage] [player]
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = null;
-        boolean isConsole;
-        if ((sender instanceof Player)) {
-            player = (Player) sender;
-            isConsole = false;
-        } else{
-            isConsole = true;
-        }
+        Player player = Bukkit.getPlayerExact(args[2]);
 
         // declare variables
         long currentTime = System.currentTimeMillis();
@@ -55,7 +48,7 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
         // add boost to boostHolder
         MMLuck.getInstance().boostHolder.addBoost(currentTime,durationSeconds,percentage);
 
-        FeedBack(player, isConsole, "&3Successfully added boost!");
+        FeedBack(player, true, "&3Successfully added boost!");
 
         float minutes = durationSeconds / 60.0f;
 
