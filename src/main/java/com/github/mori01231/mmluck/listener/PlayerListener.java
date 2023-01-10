@@ -16,6 +16,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         // cache value
-        MMLuck.getInstance().boostHolder.isSilentMode(e.getPlayer().getUniqueId());
+        new Thread(() -> MMLuck.getInstance().boostHolder.isSilentMode(e.getPlayer().getUniqueId())).start();
     }
 }
