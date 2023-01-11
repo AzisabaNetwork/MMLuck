@@ -7,11 +7,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
+import java.util.Objects;
 
 public final class MMLuck extends JavaPlugin {
-
-    private int boostPercentage;
-    private Long lastBoostPercentageCalculated = 0l;
 
     public BoostHolder boostHolder;
 
@@ -31,12 +29,13 @@ public final class MMLuck extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("MythicLuck has been enabled.");
-        this.getCommand("mythicluckgive").setExecutor(new GiveCommandExecutor());
-        this.getCommand("mythicluckgiveoverflow").setExecutor(new GiveOverflowCommandExecutor());
-        this.getCommand("addboosttime").setExecutor(new AddBoostTimeCommandExecutor());
-        this.getCommand("broadcastboost").setExecutor(new BroadcastBoostCommandExecutor());
-        this.getCommand("checkboost").setExecutor(new CheckBoostCommandExecutor());
-        this.getCommand("mythiclucksilent").setExecutor(new SilentCommand());
+        Objects.requireNonNull(this.getCommand("mythicluckgive")).setExecutor(new GiveCommandExecutor());
+        Objects.requireNonNull(this.getCommand("mythicluckgiveoverflow")).setExecutor(new GiveOverflowCommandExecutor());
+        Objects.requireNonNull(this.getCommand("addboosttime")).setExecutor(new AddBoostTimeCommandExecutor());
+        Objects.requireNonNull(this.getCommand("broadcastboost")).setExecutor(new BroadcastBoostCommandExecutor());
+        Objects.requireNonNull(this.getCommand("checkboost")).setExecutor(new CheckBoostCommandExecutor());
+        Objects.requireNonNull(this.getCommand("mythiclucksilent")).setExecutor(new SilentCommand());
+        Objects.requireNonNull(this.getCommand("giveboostitem")).setExecutor(new GiveBoostItemCommandExecutor());
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new MMCommandListener(), this);
