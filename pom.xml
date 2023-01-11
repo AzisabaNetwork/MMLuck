@@ -6,7 +6,7 @@
 
     <groupId>com.github.Mori01231</groupId>
     <artifactId>MMLuck</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>MMLuck</name>
