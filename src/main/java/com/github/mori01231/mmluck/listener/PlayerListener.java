@@ -69,7 +69,7 @@ public class PlayerListener implements Listener {
             return;
         }
         long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
-        if ((boostPercentage + percentage) >= 200) { // cap at +200%
+        if ((boostPercentage + percentage) > 200) { // cap at +200%
             e.getPlayer().sendMessage(ChatColor.RED + "使用するとブースト倍率が3倍を超えるため、このブーストは使用できません。");
             return;
         }
