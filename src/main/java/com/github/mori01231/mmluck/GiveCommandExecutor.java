@@ -105,8 +105,9 @@ public class GiveCommandExecutor implements CommandExecutor {
         }
         // If the random number is lower than the chance of getting item, give item.
         String mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
-        Log("Player : " + playerName + " Item : " + mmItemName +" Chance : " +  giveOdds / 100.0 + "% Give command : " + mmGiveString);
-        if (rand_int1 < giveOdds){
+        boolean doDrop = rand_int1 < giveOdds;
+        Log("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, Give command: " + mmGiveString + ", doDrop: " + doDrop);
+        if (doDrop) {
             sendCommand(mmGiveString);
 
             // Used for debug only

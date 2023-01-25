@@ -95,6 +95,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             silent = "-s ";
         }
 
+        int amount = 0;
         String mmGiveString;
         int firstGiveNumber = 0;
         while(giveOdds > 10000){
@@ -102,6 +103,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             firstGiveNumber += 1 * mmItemNumber;
         }
         if(firstGiveNumber > 0){
+            amount += firstGiveNumber;
             mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + firstGiveNumber;
             sendCommand(mmGiveString);
         }
@@ -113,14 +115,15 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         // If the random number is lower than the chance of getting item, give item.
         mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
-        Log("Player : " + playerName + " Item : " + mmItemName +" Chance : " +  giveOdds / 100.0 + "% Give command : " + mmGiveString);
-        if (rand_int1 < giveOdds){
+        if (rand_int1 < giveOdds) {
+            amount += 1;
             sendCommand(mmGiveString);
 
             // Used for debug only
             // sender.sendMessage("アイテムが渡されました。実行されたコマンド：" + mmGiveString);
             // sendMessage(sender, player, "&3アイテムが渡されました。実行されたコマンド ： " + mmGiveString);
         }
+        Log("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, Give command: " + mmGiveString + ", dropped amount: " + amount);
         return true;
     }
 
