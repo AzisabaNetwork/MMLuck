@@ -6,15 +6,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Random;
 
 import static org.bukkit.Bukkit.getPlayer;
-import static org.bukkit.Bukkit.getServer;
 
 public class GiveCommandExecutor implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         // Usage /mlg プレイヤー名 アイテム名 個数 確率
         // 確率は少数で指定
 
@@ -49,11 +50,10 @@ public class GiveCommandExecutor implements CommandExecutor {
         // Acquire the luck value of the player
         double luckNumber;
         try{
-            luckNumber = player.getAttribute(Attribute.GENERIC_LUCK).getValue();
+            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_LUCK)).getValue();
         }catch(Exception e){
             luckNumber = 0.0;
         }
-
 
         // Only for debug to determine if the correct luck value is read by plugin
         //sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(luckNumber)));
@@ -99,27 +99,14 @@ public class GiveCommandExecutor implements CommandExecutor {
         int rand_int1 = rand.nextInt(10000);
 
         // Check silent mode
-        String silent = "";
-        if (MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId())) {
-            silent = "-s ";
-        }
+        boolean silent = MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId());
         // If the random number is lower than the chance of getting item, give item.
-        String mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
         boolean doDrop = rand_int1 < giveOdds;
-        Log("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, Give command: " + mmGiveString + ", doDrop: " + doDrop);
+        MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, doDrop: " + doDrop);
         if (doDrop) {
-            sendCommand(mmGiveString);
-
-            // Used for debug only
-            // sender.sendMessage("アイテムが渡されました。実行されたコマンド：" + mmGiveString);
-            // sendMessage(sender, player, "&3アイテムが渡されました。実行されたコマンド ： " + mmGiveString);
+            GiveOverflowCommandExecutor.giveItems(player, mmItemName, 1, silent);
         }
         return true;
-    }
-
-    // functions to make sending commands a lot shorter
-    public void sendCommand(String command){
-        getServer().dispatchCommand(getServer().getConsoleSender(), command);
     }
 
     // function to make sending messages a lot shorter
@@ -131,9 +118,5 @@ public class GiveCommandExecutor implements CommandExecutor {
         if(!player.equals(sender)){
             player.sendActionBar('&',message);
         }
-    }
-
-    public void Log(String message){
-        getServer().getConsoleSender().sendMessage(message);
     }
 }

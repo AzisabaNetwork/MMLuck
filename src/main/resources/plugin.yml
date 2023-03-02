@@ -4,6 +4,8 @@ main: com.github.mori01231.mmluck.MMLuck
 api-version: 1.15
 depend:
   - LifeCore
+  - MythicMobs
+  - Rarity
 
 commands:
   mythicluckgive:

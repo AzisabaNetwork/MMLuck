@@ -1,19 +1,29 @@
 package com.github.mori01231.mmluck;
 
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import net.azisaba.itemstash.ItemStash;
+import net.azisaba.rarity.api.Rarity;
+import net.azisaba.rarity.api.RarityAPIProvider;
+import net.azisaba.rarity.api.item.CraftItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
-import static org.bukkit.Bukkit.*;
+import static org.bukkit.Bukkit.getPlayer;
 
 public class GiveOverflowCommandExecutor implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         // Usage /mlg プレイヤー名 アイテム名 確率 個数
         // 確率は少数で指定
 
@@ -31,24 +41,18 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        double mmItemChance;
+        final double mmItemChance;
         int mmItemNumber;
-        Player player;
-        try{
-            player = getPlayer(playerName);
-            if(player == null){
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
-                return true;
-            }
-        }catch(Exception e){
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&cこの名前のプレイヤーは現在ログインしていません。"));
+        Player player = getPlayer(playerName);
+        if (player == null) {
+            sender.sendMessage("§c" + playerName + "は現在ログインしていません。");
             return true;
         }
 
         // Acquire the luck value of the player
         double luckNumber;
         try{
-            luckNumber = player.getAttribute(Attribute.GENERIC_LUCK).getValue();
+            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_LUCK)).getValue();
         }catch(Exception e){
             luckNumber = 0.0;
         }
@@ -90,46 +94,79 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         // Check silent mode
-        String silent = "";
-        if (MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId())) {
-            silent = "-s ";
-        }
-
+        boolean silent = MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId());
         int amount = 0;
-        String mmGiveString;
-        int firstGiveNumber = 0;
-        while(giveOdds > 10000){
+        while (giveOdds > 10000) {
             giveOdds -= 10000;
-            firstGiveNumber += 1 * mmItemNumber;
+            amount += mmItemNumber;
         }
-        if(firstGiveNumber > 0){
-            amount += firstGiveNumber;
-            mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + firstGiveNumber;
-            sendCommand(mmGiveString);
-        }
-
 
         // Generate random number
         Random rand = new Random();
         int rand_int1 = rand.nextInt(10000);
 
         // If the random number is lower than the chance of getting item, give item.
-        mmGiveString = "mm i give " + silent + playerName + " " + mmItemName + " " + mmItemNumber;
         if (rand_int1 < giveOdds) {
             amount += 1;
-            sendCommand(mmGiveString);
-
-            // Used for debug only
-            // sender.sendMessage("アイテムが渡されました。実行されたコマンド：" + mmGiveString);
-            // sendMessage(sender, player, "&3アイテムが渡されました。実行されたコマンド ： " + mmGiveString);
         }
-        Log("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, Give command: " + mmGiveString + ", dropped amount: " + amount);
+        if (amount > 0) {
+            giveItems(player, mmItemName, amount, silent);
+        }
+        MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, dropped amount: " + amount);
         return true;
     }
 
-    // function to make sending commands a lot shorter
-    public void sendCommand(String command){
-        getServer().dispatchCommand(getServer().getConsoleSender(), command);
+    static void giveItems(Player player, String mmItemName, int amount, boolean silent) {
+        ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemName);
+        if (stack == null) {
+            player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemName);
+            return;
+        }
+        // we need to do this because the item stack is bugged at the moment
+        stack = CraftItemStack.STATIC.asCraftMirror(Objects.requireNonNull(CraftItemStack.STATIC.asNMSCopy(stack)));
+        stack.setAmount(amount);
+        boolean doStash = false;
+        try {
+            Rarity rarity = RarityAPIProvider.get().getRarityByItemStack(stack);
+            if (rarity == null || (
+                    rarity.getId().equals("rare") ||
+                            rarity.getId().equals("epic") ||
+                            rarity.getId().equals("legendary") ||
+                            rarity.getId().equals("mythic") ||
+                            rarity.getId().equals("special"))) {
+                doStash = true;
+            }
+        } catch (Exception e) {
+            doStash = true;
+            MMLuck.getInstance().getLogger().warning("Failed to get rarity of " + mmItemName + ", assuming alwaysStash");
+        }
+        Collection<ItemStack> items = player.getInventory().addItem(stack).values();
+        int droppedAmount = items.stream().map(ItemStack::getAmount).reduce(Integer::sum).orElse(0);
+        int actualAmount = amount;
+        actualAmount -= droppedAmount;
+        if (!silent) {
+            if (actualAmount > 0) {
+                player.sendMessage("§6[MMLuck] §e" + mmItemName + "§7 (x" + actualAmount + ")§aを獲得しました。");
+            } else {
+                player.sendMessage("§7[MMLuck] §7" + mmItemName + "§8 (x" + actualAmount + ")§7を獲得しました。");
+            }
+        }
+        if (doStash && items.size() > 0 && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
+            if (!silent) {
+                player.sendMessage("§cインベントリがいっぱいのため、§e" + droppedAmount + "§c個のアイテム§7(" + mmItemName + ")§cがStashに入りました。");
+                player.sendMessage("§b/pickupstash§cで回収できます。");
+            }
+        }
+    }
+
+    public static boolean addToStashIfEnabled(UUID uuid, ItemStack item) {
+        try {
+            Class.forName("net.azisaba.itemstash.ItemStash");
+            ItemStash.getInstance().addItemToStash(uuid, item);
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     // function to make sending messages a lot shorter
@@ -141,9 +178,5 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         if(!player.equals(sender)){
             player.sendActionBar('&',message);
         }
-    }
-
-    public void Log(String message){
-        getServer().getConsoleSender().sendMessage(message);
     }
 }
