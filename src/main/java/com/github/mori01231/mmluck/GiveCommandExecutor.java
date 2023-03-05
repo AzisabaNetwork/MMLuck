@@ -104,7 +104,7 @@ public class GiveCommandExecutor implements CommandExecutor {
         boolean doDrop = rand_int1 < giveOdds;
         MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, doDrop: " + doDrop);
         if (doDrop) {
-            GiveOverflowCommandExecutor.giveItems(player, mmItemName, 1, silent);
+            GiveOverflowCommandExecutor.giveItems(player, mmItemName, mmItemNumber, silent);
         }
         return true;
     }

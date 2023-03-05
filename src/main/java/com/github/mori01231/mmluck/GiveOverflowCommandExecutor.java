@@ -107,7 +107,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
 
         // If the random number is lower than the chance of getting item, give item.
         if (rand_int1 < giveOdds) {
-            amount += 1;
+            amount += mmItemNumber;
         }
         if (amount > 0) {
             giveItems(player, mmItemName, amount, silent);
