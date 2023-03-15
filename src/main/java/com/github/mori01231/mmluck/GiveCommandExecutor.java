@@ -102,7 +102,7 @@ public class GiveCommandExecutor implements CommandExecutor {
         boolean silent = MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId());
         // If the random number is lower than the chance of getting item, give item.
         boolean doDrop = rand_int1 < giveOdds;
-        MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, doDrop: " + doDrop);
+        MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, amount: " + mmItemNumber + ", doDrop: " + doDrop);
         if (doDrop) {
             GiveOverflowCommandExecutor.giveItems(player, mmItemName, mmItemNumber, silent);
         }
