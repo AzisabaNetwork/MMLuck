@@ -12,7 +12,7 @@ public class BroadcastBoostCommandExecutor implements CommandExecutor {
 
         Long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
 
-        if(boostPercentage == 0l)
+        if(boostPercentage == 0L)
             return true;
 
         float boostMulti = (boostPercentage + 100)/100.0f;

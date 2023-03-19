@@ -6,7 +6,7 @@
 
     <groupId>com.github.Mori01231</groupId>
     <artifactId>MMLuck</artifactId>
-    <version>1.2.5</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>MMLuck</name>
@@ -73,9 +73,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
-            <version>4.13.0</version>
+            <version>5.2.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

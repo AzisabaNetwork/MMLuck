@@ -1,6 +1,6 @@
 package com.github.mori01231.mmluck;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPIProvider;
@@ -117,7 +117,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
     }
 
     static void giveItems(Player player, String mmItemName, int amount, boolean silent) {
-        ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemName);
+        ItemStack stack = MythicBukkit.inst().getItemManager().getItemStack(mmItemName);
         if (stack == null) {
             player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemName);
             return;
