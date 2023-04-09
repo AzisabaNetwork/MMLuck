@@ -5,6 +5,8 @@ import net.azisaba.itemstash.ItemStash;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPIProvider;
 import net.azisaba.rarity.api.item.CraftItemStack;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -116,14 +118,18 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         return true;
     }
 
-    static void giveItems(Player player, String mmItemName, int amount, boolean silent) {
-        ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemName);
+    static void giveItems(Player player, String mmItemId, int amount, boolean silent) {
+        ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemId);
         if (stack == null) {
-            player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemName);
+            player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemId);
             return;
         }
         // we need to do this because the item stack is bugged at the moment
         stack = CraftItemStack.STATIC.asCraftMirror(Objects.requireNonNull(CraftItemStack.STATIC.asNMSCopy(stack)));
+        String itemName = mmItemId;
+        if (stack.hasItemMeta() && Objects.requireNonNull(stack.getItemMeta()).hasDisplayName()) {
+            itemName = stack.getItemMeta().getDisplayName();
+        }
         stack.setAmount(amount);
         boolean doStash = false;
         try {
@@ -138,22 +144,30 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             }
         } catch (Exception e) {
             doStash = true;
-            MMLuck.getInstance().getLogger().warning("Failed to get rarity of " + mmItemName + ", assuming alwaysStash");
+            MMLuck.getInstance().getLogger().warning("Failed to get rarity of " + mmItemId + ", assuming alwaysStash");
         }
         Collection<ItemStack> items = player.getInventory().addItem(stack).values();
         int droppedAmount = items.stream().map(ItemStack::getAmount).reduce(Integer::sum).orElse(0);
         int actualAmount = amount;
         actualAmount -= droppedAmount;
         if (!silent) {
+            TextComponent nameComponent = new TextComponent(itemName);
+            nameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(mmItemId)));
+            TextComponent component;
             if (actualAmount > 0) {
-                player.sendMessage("§6[MMLuck] §e" + mmItemName + "§7 (x" + actualAmount + ")§aを獲得しました。");
+                component = new TextComponent("§6[MMLuck] §e");
+                component.addExtra(nameComponent);
+                component.addExtra("§r§7 (x" + actualAmount + ")§aを獲得しました。");
             } else {
-                player.sendMessage("§7[MMLuck] §7" + mmItemName + "§8 (x" + actualAmount + ")§7を獲得しました。");
+                component = new TextComponent("§7[MMLuck] ");
+                component.addExtra(nameComponent);
+                component.addExtra("§r§8 (x" + actualAmount + ")§7を獲得しました。");
             }
+            player.spigot().sendMessage(component);
         }
         if (doStash && items.size() > 0 && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
             if (!silent) {
-                player.sendMessage("§cインベントリがいっぱいのため、§e" + droppedAmount + "§c個のアイテム§7(" + mmItemName + ")§cがStashに入りました。");
+                player.sendMessage("§cインベントリがいっぱいのため、§e" + droppedAmount + "§c個のアイテム§7(" + itemName + "§r§7)§cがStashに入りました。");
                 player.sendMessage("§b/pickupstash§cで回収できます。");
             }
         }
