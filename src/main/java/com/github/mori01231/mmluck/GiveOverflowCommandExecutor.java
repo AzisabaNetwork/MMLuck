@@ -4,7 +4,7 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPIProvider;
-import net.azisaba.rarity.api.item.CraftItemStack;
+import net.azisaba.loreeditor.api.item.CraftItemStack;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -165,7 +165,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             }
             player.spigot().sendMessage(component);
         }
-        if (doStash && items.size() > 0 && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
+        if (doStash && !items.isEmpty() && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
             if (!silent) {
                 player.sendMessage("§cインベントリがいっぱいのため、§e" + droppedAmount + "§c個のアイテム§7(" + itemName + "§r§7)§cがStashに入りました。");
                 player.sendMessage("§b/pickupstash§cで回収できます。");
