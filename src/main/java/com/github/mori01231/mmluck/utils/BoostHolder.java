@@ -1,5 +1,6 @@
 package com.github.mori01231.mmluck.utils;
 
+import com.github.mori01231.mmluck.BoostData;
 import com.github.mori01231.mmluck.MMLuck;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +39,32 @@ public class BoostHolder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<BoostData> getBoostData() {
+        List<BoostData> list = new ArrayList<>();
+        try {
+            openConnection();
+            Statement statement = connection.createStatement();
+
+            ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+            if (!result.next()) {
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
+                return list;
+            }
+
+            ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + tableName + ";");
+            while (dataList.next()) {
+                long startTime = dataList.getLong(1);
+                long duration = dataList.getLong(2);
+                long percentage = dataList.getLong(3);
+                list.add(new BoostData(startTime, duration, percentage));
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public boolean isSilentMode(UUID uuid) {
