@@ -34,6 +34,7 @@ public final class MMLuck extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("broadcastboost")).setExecutor(new BroadcastBoostCommandExecutor());
         Objects.requireNonNull(this.getCommand("checkboost")).setExecutor(new CheckBoostCommandExecutor());
         Objects.requireNonNull(this.getCommand("mythiclucksilent")).setExecutor(new SilentCommand());
+        Objects.requireNonNull(this.getCommand("mythicluckstash")).setExecutor(new StashCommand());
         Objects.requireNonNull(this.getCommand("giveboostitem")).setExecutor(new GiveBoostItemCommandExecutor());
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

@@ -23,12 +23,16 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         // remove cached value
         MMLuck.getInstance().boostHolder.silentMode.remove(e.getPlayer().getUniqueId());
+        MMLuck.getInstance().boostHolder.alwaysStash.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         // cache value
-        new Thread(() -> MMLuck.getInstance().boostHolder.isSilentMode(e.getPlayer().getUniqueId())).start();
+        new Thread(() -> {
+            MMLuck.getInstance().boostHolder.isSilentMode(e.getPlayer().getUniqueId());
+            MMLuck.getInstance().boostHolder.isAlwaysStash(e.getPlayer().getUniqueId());
+        }).start();
     }
 
     @EventHandler

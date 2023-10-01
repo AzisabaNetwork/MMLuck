@@ -35,6 +35,9 @@ commands:
   mythiclucksilent:
     aliases: [mls, mythicls, mythiclucks, mmlucksilent]
     permission: MMLuck.mls
+  mythicluckstash:
+    aliases: [mlstash]
+    permission: mmluck.mlstash
   giveboostitem:
     permission: mmluck.giveboostitem
 

@@ -13,11 +13,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings({"SqlResolve", "SqlNoDataSourceInspection"})
 public class BoostHolder {
 
     private ArrayList<ArrayList<Long>> boostTimes = new ArrayList<>();
     private ArrayList<ArrayList<Long>> boostTimesBuilder = new ArrayList<>();
     public final Map<UUID, Boolean> silentMode = new ConcurrentHashMap<>();
+    public final Map<UUID, Boolean> alwaysStash = new ConcurrentHashMap<>();
 
     private Long totalBoostPercentage;
 
@@ -33,7 +35,7 @@ public class BoostHolder {
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + playersTableName + "'");
                 if (!result.next()) {
-                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + playersTableName + "` (`id` VARCHAR(36) NOT NULL, `silent` BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (`id`))");
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + playersTableName + "` (`id` VARCHAR(36) NOT NULL, `silent` BOOLEAN NOT NULL DEFAULT FALSE, `always_stash` BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (`id`))");
                 }
             }
         } catch (Exception e) {
@@ -98,6 +100,45 @@ public class BoostHolder {
                 stmt.setString(1, uuid.toString());
                 stmt.setBoolean(2, silent);
                 stmt.setBoolean(3, silent);
+                stmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ALTER TABLE mmluck_players ADD `always_stash` BOOLEAN NOT NULL DEFAULT FALSE;
+    public boolean isAlwaysStash(UUID uuid) {
+        if (alwaysStash.containsKey(uuid)) {
+            return alwaysStash.get(uuid);
+        }
+        try {
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT `always_stash` FROM `" + playersTableName + "` WHERE `id` = ?")) {
+                stmt.setString(1, uuid.toString());
+                ResultSet result = stmt.executeQuery();
+                boolean flag;
+                if (result.next()) {
+                    flag = result.getBoolean("always_stash");
+                } else {
+                    flag = false;
+                }
+                alwaysStash.put(uuid, flag);
+                return flag;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setAlwaysStash(UUID uuid, boolean b) {
+        try {
+            alwaysStash.put(uuid, b);
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO `" + playersTableName + "` (`id`, `always_stash`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `always_stash` = ?")) {
+                stmt.setString(1, uuid.toString());
+                stmt.setBoolean(2, b);
+                stmt.setBoolean(3, b);
                 stmt.executeUpdate();
             }
         } catch (Exception e) {

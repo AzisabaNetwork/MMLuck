@@ -7,6 +7,7 @@ import net.azisaba.rarity.api.RarityAPIProvider;
 import net.azisaba.loreeditor.api.item.CraftItemStack;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -16,10 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import static org.bukkit.Bukkit.getPlayer;
 
@@ -126,12 +124,14 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         }
         // we need to do this because the item stack is bugged at the moment
         stack = CraftItemStack.STATIC.asCraftMirror(Objects.requireNonNull(CraftItemStack.STATIC.asNMSCopy(stack)));
-        String itemName = mmItemId;
+        String itemName;
         if (stack.hasItemMeta() && Objects.requireNonNull(stack.getItemMeta()).hasDisplayName()) {
             itemName = stack.getItemMeta().getDisplayName();
+        } else {
+            itemName = mmItemId;
         }
         stack.setAmount(amount);
-        boolean doStash = false;
+        boolean doStash = MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId());
         try {
             Rarity rarity = RarityAPIProvider.get().getRarityByItemStack(stack);
             if (rarity == null || (
@@ -146,7 +146,10 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             doStash = true;
             MMLuck.getInstance().getLogger().warning("Failed to get rarity of " + mmItemId + ", assuming alwaysStash");
         }
-        Collection<ItemStack> items = player.getInventory().addItem(stack).values();
+        Collection<ItemStack> items =
+                MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())
+                        ? Collections.singleton(stack)
+                        : player.getInventory().addItem(stack).values();
         int droppedAmount = items.stream().map(ItemStack::getAmount).reduce(Integer::sum).orElse(0);
         int actualAmount = amount;
         actualAmount -= droppedAmount;
@@ -154,10 +157,14 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             TextComponent nameComponent = new TextComponent(itemName);
             nameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(mmItemId)));
             TextComponent component;
-            if (actualAmount > 0) {
+            if (actualAmount > 0 || MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
                 component = new TextComponent("§6[MMLuck] §e");
                 component.addExtra(nameComponent);
-                component.addExtra("§r§7 (x" + actualAmount + ")§aを獲得しました。");
+                if (MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
+                    component.addExtra("§r§7 (x" + amount + ")§aを獲得しました。");
+                } else {
+                    component.addExtra("§r§7 (x" + actualAmount + ")§aを獲得しました。");
+                }
             } else {
                 component = new TextComponent("§7[MMLuck] ");
                 component.addExtra(nameComponent);
@@ -165,12 +172,15 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             }
             player.spigot().sendMessage(component);
         }
-        if (doStash && !items.isEmpty() && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
-            if (!silent) {
-                player.sendMessage("§cインベントリがいっぱいのため、§e" + droppedAmount + "§c個のアイテム§7(" + itemName + "§r§7)§cがStashに入りました。");
-                player.sendMessage("§b/pickupstash§cで回収できます。");
+        boolean finalDoStash = doStash;
+        Bukkit.getScheduler().runTaskAsynchronously(MMLuck.getInstance(), () -> {
+            if (finalDoStash && !items.isEmpty() && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
+                if (!silent && !MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
+                    player.sendMessage("§e" + droppedAmount + "§c個のアイテム§7(" + itemName + "§r§7)§cがStashに入りました。");
+                    player.sendMessage("§b/pickupstash§cで回収できます。");
+                }
             }
-        }
+        });
     }
 
     public static boolean addToStashIfEnabled(UUID uuid, ItemStack item) {
