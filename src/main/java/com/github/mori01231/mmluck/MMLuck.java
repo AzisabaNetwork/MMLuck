@@ -42,10 +42,10 @@ public final class MMLuck extends JavaPlugin {
         this.saveDefaultConfig();
 
         this.boostHolder = new BoostHolder();
-        boostHolder.refreshAndGetPercentage();
+        boostHolder.refreshAndGetPercentage(false, true);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            boostHolder.refreshAndGetPercentage();
+            boostHolder.refreshAndGetPercentage(false, false);
             //Bukkit.broadcastMessage("Current percentage: " + boostHolder.refreshAndGetPercentage());
         }, 100L, 100L); // 100 Ticks initial delay, 100 Tick (5 Second) between repeats
     }

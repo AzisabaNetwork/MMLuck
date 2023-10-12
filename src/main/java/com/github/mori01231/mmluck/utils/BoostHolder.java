@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings({"SqlResolve", "SqlNoDataSourceInspection"})
 public class BoostHolder {
 
     private ArrayList<ArrayList<Long>> boostTimes = new ArrayList<>();
-    private ArrayList<ArrayList<Long>> boostTimesBuilder = new ArrayList<>();
     public final Map<UUID, Boolean> silentMode = new ConcurrentHashMap<>();
     public final Map<UUID, Boolean> alwaysStash = new ConcurrentHashMap<>();
 
@@ -146,27 +146,28 @@ public class BoostHolder {
         }
     }
 
-    public Long refreshAndGetPercentage(){
+    public CompletableFuture<Long> refreshAndGetPercentage(boolean force, boolean immediate) {
         if(lastRefreshTime == null){
             lastRefreshTime = 0L;
         }
 
         // check if enough time has elapsed since last refresh
-        if(lastRefreshTime > System.currentTimeMillis() - 1000){
-            return totalBoostPercentage;
+        if(!force && lastRefreshTime > System.currentTimeMillis() - 1000){
+            return CompletableFuture.completedFuture(totalBoostPercentage);
         }
         lastRefreshTime = System.currentTimeMillis();
 
         // remove old entries from database
         removeOld();
 
-        // get newest data from database and replace boostTimes with it
-        updateFromDatabase();
-
-        // update the boost percentage
-        updateBoostPercentage();
-
-        return totalBoostPercentage;
+        // get the newest data from database and replace boostTimes with it
+        // also update boost percentage value
+        if (immediate) {
+            updateFromDatabase();
+            updateBoostPercentage();
+            return CompletableFuture.completedFuture(totalBoostPercentage);
+        }
+        return updateFromDatabase().thenRunAsync(this::updateBoostPercentage).thenApplyAsync(v -> totalBoostPercentage);
     }
 
     private void updateBoostPercentage(){
@@ -260,52 +261,46 @@ public class BoostHolder {
     }
 
     // get info from database and update local arraylist
-    private void updateFromDatabase(){
-
+    private CompletableFuture<Void> updateFromDatabase() {
         // database interaction
-        BukkitRunnable r = new BukkitRunnable() {
-            @Override
-            public void run() {
-                // async database interaction
-                try {
-                    openConnection();
-                    Statement statement = connection.createStatement();
-                    // make sure table exists
-                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
-                    if (!result.next()) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
-                        return;
-                    }
-                    // clear boost times builder
-                    boostTimesBuilder.clear();
-
-                    // populate boost times builder with updated data
-                    ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + tableName + ";");
-                    while(dataList.next()){
-                        // get info
-                        long startTime = dataList.getLong(1);
-                        long duration = dataList.getLong(2);
-                        long percentage = dataList.getLong(3);
-
-                        // create new boost
-                        ArrayList<Long> newBoost = new ArrayList<>();
-                        newBoost.add(startTime);
-                        newBoost.add(duration);
-                        newBoost.add(percentage);
-
-                        // add to boost times builder
-                        boostTimesBuilder.add(newBoost);
-                    }
-
-                    // update boost data
-                    boostTimes = (ArrayList<ArrayList<Long>>) boostTimesBuilder.clone();
-
-                } catch(ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
+        return CompletableFuture.runAsync(() -> {
+            // async database interaction
+            try {
+                openConnection();
+                Statement statement = connection.createStatement();
+                // make sure table exists
+                ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+                if (!result.next()) {
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
+                    return;
                 }
+                ArrayList<ArrayList<Long>> boostTimesBuilder = new ArrayList<>();
+
+                // populate boost times builder with updated data
+                ResultSet dataList = statement.executeQuery("SELECT * FROM " + database + "." + tableName + ";");
+                while (dataList.next()) {
+                    // get info
+                    long startTime = dataList.getLong(1);
+                    long duration = dataList.getLong(2);
+                    long percentage = dataList.getLong(3);
+
+                    // create new boost
+                    ArrayList<Long> newBoost = new ArrayList<>();
+                    newBoost.add(startTime);
+                    newBoost.add(duration);
+                    newBoost.add(percentage);
+
+                    // add to boost times builder
+                    boostTimesBuilder.add(newBoost);
+                }
+
+                // update boost data
+                boostTimes = boostTimesBuilder;
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
             }
-        };
-        r.runTaskAsynchronously(MMLuck.getInstance());
+        });
     }
 
 

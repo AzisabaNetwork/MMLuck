@@ -72,24 +72,26 @@ public class PlayerListener implements Listener {
         if (durationMinutes == 0 || percentage == 0) {
             return;
         }
-        long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
-        if ((boostPercentage + percentage) > 200) { // cap at +200%
+        long finalPercentage = percentage;
+        long finalDurationMinutes = durationMinutes;
+        long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage(true, false).join();
+        if ((boostPercentage + finalPercentage) > 200) { // cap at +200%
             e.getPlayer().sendMessage(ChatColor.RED + "使用するとブースト倍率が3倍を超えるため、このブーストは使用できません。");
             return;
         }
 
         // add boost to boostHolder
-        MMLuck.getInstance().boostHolder.addBoost(System.currentTimeMillis(), durationMinutes * 60, percentage);
+        MMLuck.getInstance().boostHolder.addBoost(System.currentTimeMillis(), finalDurationMinutes * 60, finalPercentage);
         e.getItem().subtract(1);
 
-        String sp = Long.toString(percentage);
-        if (percentage >= 0) {
+        String sp = Long.toString(finalPercentage);
+        if (finalPercentage >= 0) {
             sp = "+" + sp;
         }
         Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.WHITE + ChatColor.BOLD + e.getPlayer().getName() + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "が" +
-                ChatColor.WHITE + ChatColor.BOLD + sp + "%" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "ブーストを使用しました！" + ChatColor.GRAY + "(" + durationMinutes + "分間有効)");
+                ChatColor.WHITE + ChatColor.BOLD + sp + "%" + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "ブーストを使用しました！" + ChatColor.GRAY + "(" + finalDurationMinutes + "分間有効)");
 
-        float boostMulti = (percentage + boostPercentage + 100)/100.0f;
+        float boostMulti = (finalPercentage + boostPercentage + 100) / 100.0f;
 
         Bukkit.broadcastMessage(ChatColor.GOLD + "[ブースト] " + ChatColor.LIGHT_PURPLE + "現在のブースト倍率は" + ChatColor.WHITE + ChatColor.BOLD + boostMulti + ChatColor.LIGHT_PURPLE + "倍です！");
     }

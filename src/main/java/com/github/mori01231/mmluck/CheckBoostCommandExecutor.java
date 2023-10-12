@@ -9,7 +9,7 @@ public class CheckBoostCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        Long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
+        Long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage(false, true).join();
 
         float boostMulti = (boostPercentage + 100)/100.0f;
 

@@ -33,7 +33,7 @@ public class AddBoostTimeCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage();
+        long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage(false, true).join();
         if (false && (boostPercentage + percentage) >= 200) { // cap at +200%
             player.sendMessage(ChatColor.RED + "すでにブースト倍率が2.25倍以上のため、これ以上ブーストを追加できません。");
             return true;
