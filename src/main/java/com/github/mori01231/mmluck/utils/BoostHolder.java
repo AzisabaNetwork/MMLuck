@@ -181,7 +181,7 @@ public class BoostHolder {
     }
 
     // MySQL methods
-    public void addBoost(Long startTime, Long duration, Long percentage){
+    public CompletableFuture<Void> addBoost(Long startTime, Long duration, Long percentage) {
         ArrayList<Long> boost = new ArrayList<>();
         boost.add(startTime);
         boost.add(duration);
@@ -189,28 +189,24 @@ public class BoostHolder {
         boostTimes.add(boost);
 
         // add boost to database
-        BukkitRunnable r = new BukkitRunnable() {
-            @Override
-            public void run() {
-                //This is where you should do your database interaction
+        return CompletableFuture.runAsync(() -> {
+            //This is where you should do your database interaction
 
-                try {
-                    openConnection();
-                    Statement statement = connection.createStatement();
+            try {
+                openConnection();
+                Statement statement = connection.createStatement();
 
-                    ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
-                    if (!result.next()) {
-                        statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
-                    }
-
-                    statement.executeUpdate("INSERT INTO " + tableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
-
-                } catch(ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
+                ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "';");
+                if (!result.next()) {
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`StartTime` BIGINT UNSIGNED, `Duration` BIGINT UNSIGNED, `Percentage` BIGINT UNSIGNED)");
                 }
+
+                statement.executeUpdate("INSERT INTO " + tableName + " (StartTime, Duration, Percentage) VALUES ('" + startTime + "', '" + duration + "', '" + percentage + "');");
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
             }
-        };
-        r.runTaskAsynchronously(MMLuck.getInstance());
+        });
     }
 
     // go through database and delete any boosts where duration + startTime > currentTime

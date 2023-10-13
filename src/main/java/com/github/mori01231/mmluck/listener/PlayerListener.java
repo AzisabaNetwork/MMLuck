@@ -75,13 +75,13 @@ public class PlayerListener implements Listener {
         long finalPercentage = percentage;
         long finalDurationMinutes = durationMinutes;
         long boostPercentage = MMLuck.getInstance().boostHolder.refreshAndGetPercentage(true, false).join();
-        if ((boostPercentage + finalPercentage) > 200) { // cap at +200%
+        if ((boostPercentage + finalPercentage) > 201) { // cap at +201% (allow 1% for debugging)
             e.getPlayer().sendMessage(ChatColor.RED + "使用するとブースト倍率が3倍を超えるため、このブーストは使用できません。");
             return;
         }
 
         // add boost to boostHolder
-        MMLuck.getInstance().boostHolder.addBoost(System.currentTimeMillis(), finalDurationMinutes * 60, finalPercentage);
+        MMLuck.getInstance().boostHolder.addBoost(System.currentTimeMillis(), finalDurationMinutes * 60, finalPercentage).join();
         e.getItem().subtract(1);
 
         String sp = Long.toString(finalPercentage);
