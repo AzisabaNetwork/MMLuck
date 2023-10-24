@@ -8,6 +8,8 @@ depend:
   - Rarity
 
 commands:
+  mmluckeval:
+    permission: mmluck.mmluckeval
   mythicluckgive:
     description: MythicLuckの基本コマンド。
     aliases: [mlg, mythiclg, mythicluckg, mlgive]
@@ -72,4 +74,6 @@ permissions:
     default: true
   mmluck.giveboostitem:
     description: "Allows you to use /giveboostitem command."
+    default: false
+  mmluck.mmluckeval:
     default: false

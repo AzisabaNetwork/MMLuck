@@ -1,10 +1,11 @@
 package com.github.mori01231.mmluck;
 
+import com.github.mori01231.mmluck.utils.Expr;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.azisaba.itemstash.ItemStash;
+import net.azisaba.loreeditor.api.item.CraftItemStack;
 import net.azisaba.rarity.api.Rarity;
 import net.azisaba.rarity.api.RarityAPIProvider;
-import net.azisaba.loreeditor.api.item.CraftItemStack;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -15,9 +16,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getPlayer;
 
@@ -124,6 +128,32 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         }
         // we need to do this because the item stack is bugged at the moment
         stack = CraftItemStack.STATIC.asCraftMirror(Objects.requireNonNull(CraftItemStack.STATIC.asNMSCopy(stack)));
+        // rewrite lore if lore has script pattern
+        if (stack.hasItemMeta()) {
+            ItemMeta meta = Objects.requireNonNull(stack.getItemMeta());
+            AtomicBoolean modified = new AtomicBoolean();
+            if (meta.hasLore()) {
+                meta.setLore(Objects.requireNonNull(meta.getLore()).stream().map(line -> {
+                    String replaced = Expr.evalAndReplace(player, line, mmItemId + " (lore)");
+                    if (replaced != null) {
+                        modified.set(true);
+                        return replaced;
+                    }
+                    return line;
+                }).collect(Collectors.toList()));
+            }
+            if (meta.hasDisplayName()) {
+                String originalName = meta.getDisplayName();
+                String replaced = Expr.evalAndReplace(player, originalName, mmItemId + " (name)");
+                if (replaced != null) {
+                    modified.set(true);
+                    meta.setDisplayName(replaced);
+                }
+            }
+            if (modified.get()) {
+                stack.setItemMeta(meta);
+            }
+        }
         String itemName;
         if (stack.hasItemMeta() && Objects.requireNonNull(stack.getItemMeta()).hasDisplayName()) {
             itemName = stack.getItemMeta().getDisplayName();
