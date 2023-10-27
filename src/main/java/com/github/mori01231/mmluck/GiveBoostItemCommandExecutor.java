@@ -65,7 +65,8 @@ public class GiveBoostItemCommandExecutor implements TabExecutor {
                 "§d" + playerName + " 専用",
                 "§c§l【 取引禁止 】",
                 "§f",
-                "§7このアイテムは別で購入したブーストとスタックできません。"
+                "§7このアイテムは別で購入したブーストとスタックできません。",
+                "§8[Soulbound: " + playerUUID + "]"
         ));
         meta.getPersistentDataContainer().set(new NamespacedKey(MMLuck.getInstance(), "duration"), PersistentDataType.LONG, durationMinutes);
         meta.getPersistentDataContainer().set(new NamespacedKey(MMLuck.getInstance(), "percentage"), PersistentDataType.LONG, percentage);
