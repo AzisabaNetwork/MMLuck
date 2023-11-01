@@ -1,5 +1,7 @@
 package com.github.mori01231.mmluck;
 
+import net.azisaba.rarity.api.Rarity;
+import net.azisaba.rarity.api.RarityAPIProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
@@ -82,6 +84,7 @@ public class GiveCommandExecutor implements CommandExecutor {
             return true;
         }
 
+        Rarity minimumRareMessageRarity = RarityAPIProvider.get().getRarityById(args.length == 4 ? "rare" : args[4]);
 
         // Calculate the odds the player will be getting the item
         int giveMultiplier = (int) Math.round((100 + luckNumber) * boostMulti); // multiplier in 0-100%
@@ -104,7 +107,7 @@ public class GiveCommandExecutor implements CommandExecutor {
         boolean doDrop = rand_int1 < giveOdds;
         MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, amount: " + mmItemNumber + ", doDrop: " + doDrop);
         if (doDrop) {
-            GiveOverflowCommandExecutor.giveItems(player, mmItemName, mmItemNumber, silent);
+            GiveOverflowCommandExecutor.giveItems(player, mmItemName, mmItemNumber, silent, minimumRareMessageRarity, giveMultiplier - 100);
         }
         return true;
     }

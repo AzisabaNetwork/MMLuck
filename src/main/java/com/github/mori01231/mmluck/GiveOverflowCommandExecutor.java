@@ -89,6 +89,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             return true;
         }
 
+        Rarity minimumRareMessageRarity = RarityAPIProvider.get().getRarityById(args.length == 4 ? "rare" : args[4]);
 
         // Calculate the odds the player will be getting the item
         int giveMultiplier = (int) Math.round((100 + luckNumber) * boostMulti); // multiplier in 0-100%
@@ -114,13 +115,13 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             amount += mmItemNumber;
         }
         if (amount > 0) {
-            giveItems(player, mmItemName, amount, silent);
+            giveItems(player, mmItemName, amount, silent, minimumRareMessageRarity, giveMultiplier - 100);
         }
         MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, dropped amount: " + amount);
         return true;
     }
 
-    static void giveItems(Player player, String mmItemId, int amount, boolean silent) {
+    static void giveItems(Player player, String mmItemId, int amount, boolean silent, Rarity minimumRareMessageRarity, double boostedChance) {
         ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemId);
         if (stack == null) {
             player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemId);
@@ -160,17 +161,28 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         } else {
             itemName = mmItemId;
         }
+        TextComponent nameComponent = new TextComponent(itemName);
+        nameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(mmItemId)));
         stack.setAmount(amount);
         boolean doStash = MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId());
         try {
             Rarity rarity = RarityAPIProvider.get().getRarityByItemStack(stack);
-            if (rarity == null || (
-                    rarity.getId().equals("rare") ||
-                            rarity.getId().equals("epic") ||
-                            rarity.getId().equals("legendary") ||
-                            rarity.getId().equals("mythic") ||
-                            rarity.getId().equals("special"))) {
+            if (rarity == null) {
                 doStash = true;
+            } else {
+                if (rarity.getWeight() >= minimumRareMessageRarity.getWeight()) {
+                    doStash = true;
+                    String color = ChatColor.translateAlternateColorCodes('&', rarity.getDisplayName().substring(0, 2));
+                    TextComponent component;
+                    if (rarity.getId().equals("common") || rarity.getId().equals("uncommon") || rarity.getId().equals("rare")) {
+                        component = new TextComponent(color + "§lレアドロップ！ ");
+                    } else {
+                        component = new TextComponent(color + "§l激レアドロップ！ ");
+                    }
+                    component.addExtra(nameComponent);
+                    component.addExtra("§r§7 (x" + stack.getAmount() + ") §b(✦ +" + Math.round(boostedChance) + "% ブースト)");
+                    player.spigot().sendMessage(component);
+                }
             }
         } catch (Exception e) {
             doStash = true;
@@ -184,8 +196,6 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         int actualAmount = amount;
         actualAmount -= droppedAmount;
         if (!silent) {
-            TextComponent nameComponent = new TextComponent(itemName);
-            nameComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(mmItemId)));
             TextComponent component;
             if (actualAmount > 0 || MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
                 component = new TextComponent("§6[MMLuck] §e");
