@@ -92,26 +92,22 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         Rarity minimumRareMessageRarity = RarityAPIProvider.get().getRarityById(args.length == 4 ? "rare" : args[4]);
 
         // Calculate the odds the player will be getting the item
-        int giveMultiplier = (int) Math.round((100 + luckNumber) * boostMulti); // multiplier in 0-100%
-        int giveOdds = (int)Math.round(giveMultiplier * mmItemChance * 100); // odds in 0-100% * 10
+        double giveMultiplier = (100 + luckNumber) * boostMulti / 100; // multiplier in 0-100%
+        double giveOdds = giveMultiplier * mmItemChance; // odds in 0-100% * 10
 
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds / 100.0 + "%     ブースト倍率 : &f&l+" + boostMulti +"倍");
+        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + giveOdds * 100.0 + "%     ブースト倍率 : &f&l+" + boostMulti +"倍");
         //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
 
         // Check silent mode
         boolean silent = MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId());
         int amount = 0;
-        while (giveOdds > 10000) {
-            giveOdds -= 10000;
+        while (giveOdds > 1) {
+            giveOdds -= 1;
             amount += mmItemNumber;
         }
 
-        // Generate random number
-        Random rand = new Random();
-        int rand_int1 = rand.nextInt(10000);
-
         // If the random number is lower than the chance of getting item, give item.
-        if (rand_int1 < giveOdds) {
+        if (Math.random() < giveOdds) {
             amount += mmItemNumber;
         }
         if (amount > 0) {
