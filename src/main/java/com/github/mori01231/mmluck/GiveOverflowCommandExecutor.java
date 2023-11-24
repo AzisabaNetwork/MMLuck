@@ -210,7 +210,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         }
         boolean finalDoStash = doStash;
         Bukkit.getScheduler().runTaskAsynchronously(MMLuck.getInstance(), () -> {
-            if (finalDoStash && !items.isEmpty() && items.stream().allMatch(item -> addToStashIfEnabled(player.getUniqueId(), item))) {
+            if (finalDoStash && !items.isEmpty() && items.stream().allMatch(item -> addToStashIfEnabled(player, item))) {
                 if (!silent && !MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
                     player.sendMessage("§e" + droppedAmount + "§c個のアイテム§7(" + itemName + "§r§7)§cがStashに入りました。");
                     player.sendMessage("§b/pickupstash§cで回収できます。");
@@ -219,6 +219,23 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         });
     }
 
+    public static boolean addToStashIfEnabled(Player player, ItemStack item) {
+        try {
+            Class.forName("net.azisaba.itemstash.ItemStash");
+            ItemStash.getInstance().addItemToStash(player.getUniqueId(), item);
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        } catch (Exception e) {
+            MMLuck.getInstance().getSLF4JLogger().error("Failed to add item to stash: " + item + "; falling back to addItem -> drop", e);
+            for (ItemStack value : player.getInventory().addItem(item).values()) {
+                player.getWorld().dropItem(player.getLocation(), value);
+            }
+            return false;
+        }
+    }
+
+    @Deprecated
     public static boolean addToStashIfEnabled(UUID uuid, ItemStack item) {
         try {
             Class.forName("net.azisaba.itemstash.ItemStash");
