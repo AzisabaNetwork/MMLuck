@@ -10,6 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static org.bukkit.Bukkit.getPlayer;
@@ -86,17 +92,27 @@ public class GiveCommandExecutor implements CommandExecutor {
         Rarity minimumRareMessageRarity = RarityAPIProvider.get().getRarityById(args.length == 4 ? "rare" : args[4]);
 
         // Calculate the odds the player will be getting the item
+        BigDecimal luckNumberD = new BigDecimal(luckNumber);
+        BigDecimal boostMultiD = new BigDecimal(boostMulti);
         double giveMultiplier = (100 + luckNumber) * boostMulti / 100; // multiplier in 0-100%
-        double giveOdds = giveMultiplier * mmItemChance; // odds in 0-100%
-
-        sendMessage(sender, player, "&3アイテムドロップ確率 ： " + (giveOdds * 100.0) + "%     ブースト倍率 : &f&l+" + boostMulti +"倍");
-        //sender.sendMessage("アイテムが渡される確率（1を超えている場合は実際は1扱いされます）：" + String.valueOf(giveOdds/100.0));
-
+        // If the random number is lower than the chance of getting item, give item.
+        boolean doDrop;
+        try {
+            BigDecimal giveMultiplierD = luckNumberD.add(new BigDecimal(100)).multiply(boostMultiD).divide(new BigDecimal(100), RoundingMode.HALF_EVEN);
+            BigDecimal giveOdds = giveMultiplierD.multiply(BigDecimal.valueOf(mmItemChance)); // odds in 0-100%
+            String formattedValue = giveOdds.multiply(new BigDecimal(100)).stripTrailingZeros().toPlainString();
+            String japanese = toFriendlyString(new BigDecimal(1).divide(giveOdds, RoundingMode.HALF_EVEN).toBigInteger()) + "分の1";
+            sendMessage(sender, player, "&3アイテムドロップ確率 ： " + formattedValue + "% (" + giveOdds.multiply(new BigDecimal(100)).doubleValue() + "% " + japanese + ")     ブースト倍率 : &f&l+" + boostMulti + "倍");
+            doDrop = giveOdds.compareTo(BigDecimal.valueOf(Math.random())) >= 0;
+            MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds.multiply(new BigDecimal(100)) + "%, amount: " + mmItemNumber + ", doDrop: " + doDrop);
+        } catch (ArithmeticException e) {
+            double giveOdds = giveMultiplier * mmItemChance; // odds in 0-100%
+            sendMessage(sender, player, "&3アイテムドロップ確率 ： " + (giveOdds * 100) + "%     ブースト倍率 : &f&l+" + boostMulti + "倍");
+            doDrop = giveOdds >= 1 || Math.random() < giveOdds;
+            MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  (giveOdds * 100.0) + "%, amount: " + mmItemNumber + ", doDrop: " + doDrop);
+        }
         // Check silent mode
         boolean silent = MMLuck.getInstance().boostHolder.isSilentMode(player.getUniqueId());
-        // If the random number is lower than the chance of getting item, give item.
-        boolean doDrop = giveOdds >= 1 || Math.random() < giveOdds;
-        MMLuck.getInstance().getLogger().info("Player: " + playerName + ", Item: " + mmItemName + ", Chance: " +  giveOdds / 100.0 + "%, amount: " + mmItemNumber + ", doDrop: " + doDrop);
         if (doDrop) {
             GiveOverflowCommandExecutor.giveItems(player, mmItemName, mmItemNumber, silent, minimumRareMessageRarity, giveMultiplier - 100);
         }
@@ -112,5 +128,13 @@ public class GiveCommandExecutor implements CommandExecutor {
         if(!player.equals(sender)){
             player.sendActionBar('&',message);
         }
+    }
+
+    public static String toFriendlyString(BigInteger number) {
+        List<String> suffixes = Arrays.asList("", "", "万", "億", "兆", "京", "垓", "\uD855\uDF71", "穣", "溝", "澗", "正", "載", "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数");
+        int suffixNum = (int) Math.ceil(number.toString(10).length() / 4.0);
+        String value = new DecimalFormat("0.00").format(new BigDecimal(number).divide(BigDecimal.valueOf(Math.pow(10000, suffixNum - 1)), RoundingMode.HALF_EVEN));
+        String suffix = suffixes.get((int) suffixNum);
+        return value + suffix;
     }
 }
