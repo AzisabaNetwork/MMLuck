@@ -1,6 +1,9 @@
 package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.MMLuck;
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
+import io.lumine.xikage.mythicmobs.skills.variables.VariableRegistry;
 import org.bukkit.BanEntry;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -60,8 +63,10 @@ public final class Expr {
                             .allowPrivate(true)
                             .addVariable("player", sender.getClass())
                             .addVariable("expr", Expr.class)
+                            .addVariable("globalVariable", VariableRegistry.class)
+                            .addVariable("casterVariable", VariableRegistry.class)
                             .build();
-            return getSuggestionsPartial(Stream.of("player", "expr"), compileData, src);
+            return getSuggestionsPartial(Stream.of("player", "expr", "globalVariable", "casterVariable"), compileData, src);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -145,6 +150,8 @@ public final class Expr {
                             .allowPrivate(true)
                             .addVariable("player", player.getClass())
                             .addVariable("expr", Expr.class)
+                            .addVariable("globalVariable", VariableRegistry.class)
+                            .addVariable("casterVariable", VariableRegistry.class)
                             .build();
             InstructionSet instructionSet = ExpressionParser.compile(src, compileData);
             instructionSet.forEach(instruction -> {
@@ -160,6 +167,8 @@ public final class Expr {
                             .allowPrivate(true)
                             .addVariable("player", player)
                             .addVariable("expr", INSTANCE)
+                            .addVariable("globalVariable", MythicMobs.inst().getVariableManager().getGlobalRegistry().get())
+                            .addVariable("casterVariable", MythicMobs.inst().getPlayerManager().getPlayerData(BukkitAdapter.adapt(player)).getVariables())
                             .build()
             );
         } catch (Exception e) {
