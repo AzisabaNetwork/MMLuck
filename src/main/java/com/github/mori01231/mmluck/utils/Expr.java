@@ -241,4 +241,12 @@ public final class Expr {
     public static String longToHex(long l) {
         return Long.toString(l, 16);
     }
+
+    @NotNull
+    public String padZero(int number, int length) {
+        String s = String.valueOf(number);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length - s.length(); i++) sb.append("0");
+        return sb.append(s).toString();
+    }
 }
