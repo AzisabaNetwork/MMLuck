@@ -249,4 +249,9 @@ public final class Expr {
         for (int i = 0; i < length - s.length(); i++) sb.append("0");
         return sb.append(s).toString();
     }
+
+    @NotNull
+    public String comma(int number) {
+        return String.format("%,d", number);
+    }
 }
