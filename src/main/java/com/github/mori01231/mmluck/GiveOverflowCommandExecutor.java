@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import xyz.acrylicstyle.storageBox.utils.StorageBox;
+import xyz.acrylicstyle.storageBox.utils.StorageBoxUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -184,10 +186,17 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             doStash = true;
             MMLuck.getInstance().getLogger().warning("Failed to get rarity of " + mmItemId + ", assuming alwaysStash");
         }
-        Collection<ItemStack> items =
-                MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())
-                        ? Collections.singleton(stack)
-                        : player.getInventory().addItem(stack).values();
+        Collection<ItemStack> items;
+        Map.Entry<Integer, StorageBox> entry = StorageBoxUtils.getStorageBoxForType(player.getInventory(), stack);
+        if (entry != null) {
+            entry.getValue().setAmount(entry.getValue().getAmount() + stack.getAmount());
+            player.getInventory().setItem(entry.getKey(), entry.getValue().getItemStack());
+            items = Collections.emptyList();
+        } else if (MMLuck.getInstance().boostHolder.isAlwaysStash(player.getUniqueId())) {
+            items = Collections.singleton(stack);
+        } else {
+            items = player.getInventory().addItem(stack).values();
+        }
         int droppedAmount = items.stream().map(ItemStack::getAmount).reduce(Integer::sum).orElse(0);
         int actualAmount = amount;
         actualAmount -= droppedAmount;

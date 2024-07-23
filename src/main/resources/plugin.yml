@@ -6,6 +6,7 @@ depend:
   - LifeCore
   - MythicMobs
   - Rarity
+  - StorageBox
 
 commands:
   mmluckeval:
