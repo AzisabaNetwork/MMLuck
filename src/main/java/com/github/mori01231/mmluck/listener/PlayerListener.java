@@ -24,6 +24,7 @@ public class PlayerListener implements Listener {
         // remove cached value
         MMLuck.getInstance().boostHolder.silentMode.remove(e.getPlayer().getUniqueId());
         MMLuck.getInstance().boostHolder.alwaysStash.remove(e.getPlayer().getUniqueId());
+        MMLuck.getInstance().boostHolder.minimumStashRarity.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -32,6 +33,7 @@ public class PlayerListener implements Listener {
         new Thread(() -> {
             MMLuck.getInstance().boostHolder.isSilentMode(e.getPlayer().getUniqueId());
             MMLuck.getInstance().boostHolder.isAlwaysStash(e.getPlayer().getUniqueId());
+            MMLuck.getInstance().boostHolder.getMinimumStashRarity(e.getPlayer().getUniqueId());
         }).start();
     }
 

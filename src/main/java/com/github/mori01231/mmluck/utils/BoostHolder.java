@@ -2,15 +2,14 @@ package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.BoostData;
 import com.github.mori01231.mmluck.MMLuck;
+import net.azisaba.rarity.api.RarityAPIProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.intellij.lang.annotations.Subst;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +19,7 @@ public class BoostHolder {
     private ArrayList<ArrayList<Long>> boostTimes = new ArrayList<>();
     public final Map<UUID, Boolean> silentMode = new ConcurrentHashMap<>();
     public final Map<UUID, Boolean> alwaysStash = new ConcurrentHashMap<>();
+    public final Map<UUID, Integer> minimumStashRarity = new ConcurrentHashMap<>();
 
     private Long totalBoostPercentage;
 
@@ -35,7 +35,7 @@ public class BoostHolder {
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery("SHOW TABLES LIKE '" + playersTableName + "'");
                 if (!result.next()) {
-                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + playersTableName + "` (`id` VARCHAR(36) NOT NULL, `silent` BOOLEAN NOT NULL DEFAULT FALSE, `always_stash` BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (`id`))");
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + playersTableName + "` (`id` VARCHAR(36) NOT NULL, `silent` BOOLEAN NOT NULL DEFAULT FALSE, `always_stash` BOOLEAN NOT NULL DEFAULT FALSE, `minimum_stash_rarity` INT NOT NULL DEFAULT -1, PRIMARY KEY (`id`))");
                 }
             }
         } catch (Exception e) {
@@ -139,6 +139,48 @@ public class BoostHolder {
                 stmt.setString(1, uuid.toString());
                 stmt.setBoolean(2, b);
                 stmt.setBoolean(3, b);
+                stmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ALTER TABLE mmluck_players ADD `minimum_stash_rarity` INT NOT NULL DEFAULT -1;
+    public int getMinimumStashRarity(UUID uuid) {
+        if (minimumStashRarity.containsKey(uuid)) {
+            return minimumStashRarity.get(uuid);
+        }
+        try {
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT `minimum_stash_rarity` FROM `" + playersTableName + "` WHERE `id` = ?")) {
+                stmt.setString(1, uuid.toString());
+                ResultSet result = stmt.executeQuery();
+                int num = -1;
+                if (result.next()) {
+                    num = result.getInt("minimum_stash_rarity");
+                }
+                if (num == -1) {
+                    @Subst("rare")
+                    String rarity = Objects.requireNonNull(MMLuck.getInstance().getConfig().getString("minimumStashRarityDefault", "rare"));
+                    num = RarityAPIProvider.get().getRarityById(rarity).getWeight();
+                }
+                minimumStashRarity.put(uuid, num);
+                return num;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setMinimumStashRarity(UUID uuid, int i) {
+        try {
+            minimumStashRarity.put(uuid, i);
+            openConnection();
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO `" + playersTableName + "` (`id`, `minimum_stash_rarity`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `minimum_stash_rarity` = ?")) {
+                stmt.setString(1, uuid.toString());
+                stmt.setInt(2, i);
+                stmt.setInt(3, i);
                 stmt.executeUpdate();
             }
         } catch (Exception e) {

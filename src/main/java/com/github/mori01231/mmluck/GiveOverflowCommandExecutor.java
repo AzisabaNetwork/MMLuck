@@ -168,6 +168,10 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
             if (rarity == null) {
                 doStash = true;
             } else {
+                int minimumStashRarityWeight = MMLuck.getInstance().boostHolder.getMinimumStashRarity(player.getUniqueId());
+                if (rarity.getWeight() >= minimumStashRarityWeight) {
+                    doStash = true;
+                }
                 if (rarity.getWeight() >= minimumRareMessageRarity.getWeight()) {
                     doStash = true;
                     String color = ChatColor.translateAlternateColorCodes('&', rarity.getDisplayName().substring(0, 2));

@@ -1,5 +1,7 @@
 package com.github.mori01231.mmluck;
 
+import com.github.mori01231.mmluck.commands.MinimumStashRarityCommand;
+import com.github.mori01231.mmluck.gui.MinimumStashRarityGui;
 import com.github.mori01231.mmluck.listener.PlayerListener;
 import com.github.mori01231.mmluck.utils.BoostHolder;
 import org.bukkit.Bukkit;
@@ -37,8 +39,10 @@ public final class MMLuck extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("mythicluckstash")).setExecutor(new StashCommand());
         Objects.requireNonNull(this.getCommand("giveboostitem")).setExecutor(new GiveBoostItemCommandExecutor());
         Objects.requireNonNull(this.getCommand("mmluckeval")).setExecutor(new MMLuckEvalCommand());
+        Objects.requireNonNull(this.getCommand("minimumstashrarity")).setExecutor(new MinimumStashRarityCommand());
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MinimumStashRarityGui.EventListener(), this);
 
         this.saveDefaultConfig();
 

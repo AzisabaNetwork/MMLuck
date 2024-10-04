@@ -41,6 +41,9 @@ commands:
   mythicluckstash:
     aliases: [mlstash]
     permission: mmluck.mlstash
+  minimumstashrarity:
+    aliases: [mlminimumstashrarity, mlstashrarity]
+    permission: mmluck.mlstashrarity
   giveboostitem:
     permission: mmluck.giveboostitem
 
