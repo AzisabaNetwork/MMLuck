@@ -1,9 +1,8 @@
 package com.github.mori01231.mmluck.utils;
 
 import com.github.mori01231.mmluck.MMLuck;
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
-import io.lumine.xikage.mythicmobs.skills.variables.VariableRegistry;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.skills.variables.VariableRegistry;
 import org.bukkit.BanEntry;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -167,8 +166,8 @@ public final class Expr {
                             .allowPrivate(true)
                             .addVariable("player", player)
                             .addVariable("expr", INSTANCE)
-                            .addVariable("globalVariable", MythicMobs.inst().getVariableManager().getGlobalRegistry().get())
-                            .addVariable("casterVariable", MythicMobs.inst().getPlayerManager().getPlayerData(BukkitAdapter.adapt(player)).getVariables())
+                            .addVariable("globalVariable", MythicBukkit.inst().getVariableManager().getGlobalRegistry())
+                            .addVariable("casterVariable", MythicBukkit.inst().getPlayerManager().getProfile(player).getVariables())
                             .build()
             );
         } catch (Exception e) {
