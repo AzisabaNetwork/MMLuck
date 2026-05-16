@@ -1,7 +1,7 @@
 name: MMLuck
-version: ${project.version}
+version: @version@
 main: com.github.mori01231.mmluck.MMLuck
-api-version: 1.15
+api-version: 1.21
 depend:
   - LifeCore
   - MythicMobs

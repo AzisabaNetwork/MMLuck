@@ -57,7 +57,7 @@ public class GiveCommandExecutor implements CommandExecutor {
         // Acquire the luck value of the player
         double luckNumber;
         try{
-            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_LUCK)).getValue();
+            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.LUCK)).getValue();
         }catch(Exception e){
             luckNumber = 0.0;
         }

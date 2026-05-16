@@ -1,7 +1,7 @@
 package com.github.mori01231.mmluck;
 
 import com.github.mori01231.mmluck.utils.Expr;
-import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import net.azisaba.itemstash.ItemStash;
 import net.azisaba.loreeditor.api.item.CraftItemStack;
 import net.azisaba.rarity.api.Rarity;
@@ -58,7 +58,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
         // Acquire the luck value of the player
         double luckNumber;
         try{
-            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_LUCK)).getValue();
+            luckNumber = Objects.requireNonNull(player.getAttribute(Attribute.LUCK)).getValue();
         }catch(Exception e){
             luckNumber = 0.0;
         }
@@ -120,7 +120,7 @@ public class GiveOverflowCommandExecutor implements CommandExecutor {
     }
 
     static void giveItems(Player player, String mmItemId, int amount, boolean silent, Rarity minimumRareMessageRarity, double boostedChance) {
-        ItemStack stack = MythicMobs.inst().getItemManager().getItemStack(mmItemId);
+        ItemStack stack = MythicBukkit.inst().getItemManager().getItemStack(mmItemId);
         if (stack == null) {
             player.sendActionBar(ChatColor.RED + "アイテムが見つかりません:" + mmItemId);
             return;
