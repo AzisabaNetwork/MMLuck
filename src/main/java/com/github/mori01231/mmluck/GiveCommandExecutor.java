@@ -92,13 +92,13 @@ public class GiveCommandExecutor implements CommandExecutor {
         Rarity minimumRareMessageRarity = RarityAPIProvider.get().getRarityById(args.length == 4 ? "rare" : args[4]);
 
         // Calculate the odds the player will be getting the item
-        BigDecimal luckNumberD = new BigDecimal(luckNumber);
-        BigDecimal boostMultiD = new BigDecimal(boostMulti);
+        BigDecimal luckNumberD = BigDecimal.valueOf(luckNumber);
+        BigDecimal boostMultiD = BigDecimal.valueOf(boostMulti);
         double giveMultiplier = (100 + luckNumber) * boostMulti / 100; // multiplier in 0-100%
         // If the random number is lower than the chance of getting item, give item.
         boolean doDrop;
         try {
-            BigDecimal giveMultiplierD = luckNumberD.add(new BigDecimal(100)).multiply(boostMultiD).divide(new BigDecimal(100), RoundingMode.HALF_EVEN);
+            BigDecimal giveMultiplierD = luckNumberD.add(new BigDecimal(100)).multiply(boostMultiD).movePointLeft(2);
             BigDecimal giveOdds = giveMultiplierD.multiply(BigDecimal.valueOf(mmItemChance)); // odds in 0-100%
             String formattedValue = giveOdds.multiply(new BigDecimal(100)).stripTrailingZeros().toPlainString();
             String japanese = toFriendlyString(new BigDecimal(1).divide(giveOdds, RoundingMode.HALF_EVEN).toBigInteger()) + "分の1";

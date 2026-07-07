@@ -35,7 +35,7 @@ dependencies {
 }
 
 group = "com.github.Mori01231"
-version = "1.8.0+1.21.11"
+version = "1.8.1+1.21.11"
 description = "MMLuck"
 
 publishing {
