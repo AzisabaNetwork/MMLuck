@@ -1,0 +1,55 @@
+{
+  "common.player_only": "<red>This command can only be executed by a player.",
+  "common.console_not_allowed": "<red>This command cannot be executed from the console.",
+  "common.enabled": "<green>Enabled",
+  "common.disabled": "<red>Disabled",
+
+  "number.group_digits": "3",
+  "number.suffixes": ",K,M,B,T,Qa,Qi,Sx,Sp,Oc,No,Dc",
+  "odds": "1 in <value>",
+
+  "give.invalid_args": "<red>Invalid arguments.",
+  "give.player_offline": "<red><player> is not online.",
+  "give.invalid_amount": "<red>The amount must be an integer of 0 or more: <value>",
+  "give.invalid_chance": "<red>The chance must be a decimal number of 0 or more: <value>",
+  "give.invalid_rarity": "<red>Unknown rarity: <value>",
+  "give.chance": "<dark_aqua>Drop chance: <chance>% (<odds>)     Boost: <white><bold>x<multiplier>",
+  "give.chance_simple": "<dark_aqua>Drop chance: <chance>%     Boost: <white><bold>x<multiplier>",
+
+  "item.not_found": "<red>Item not found: <id>",
+  "drop.rare": "<rarity_color><bold>RARE DROP! </bold></rarity_color><item><gray> (x<amount>) </gray><aqua>(✦ +<boost>% boost)",
+  "drop.super_rare": "<rarity_color><bold>SUPER RARE DROP! </bold></rarity_color><item><gray> (x<amount>) </gray><aqua>(✦ +<boost>% boost)",
+  "drop.obtained": "<gold>[MMLuck] </gold><green>Obtained </green><yellow><item></yellow><gray> (x<amount>)",
+  "drop.obtained_none": "<gray>[MMLuck] Obtained <item><dark_gray> (x<amount>)",
+
+  "stash.added": "<yellow><amount></yellow><red> item(s) </red><gray>(<item><gray>)</gray><red> went to your stash.",
+  "stash.pickup_hint": "<red>Use </red><aqua>/pickupstash</aqua><red> to collect them.",
+  "stash.mode_enabled": "<green>All drops will now go to your stash.",
+  "stash.mode_disabled": "<green>Switched to normal drop mode.",
+
+  "silent.enabled": "<red>Item drop log is now hidden.",
+  "silent.disabled": "<green>Item drop log is now shown.",
+
+  "verbose.enabled": "<green>All drop rolls will now be shown.",
+  "verbose.disabled": "<red>Drop roll log is now hidden.",
+  "verbose.line": "<gold>[MMLuck] </gold><yellow><item></yellow><gray> ×<amount> </gray><dark_gray>— </dark_gray><aqua><chance>%",
+  "verbose.hover": "<gray>Base chance: <white><original_chance>%</white>\nMulti drop: <multi_drop>\nTotal luck: <white><total_luck>%</white>\n  Equipment: <white><equipment>%</white>\n  Main hand: <white><main_hand>%</white>\n  Off hand: <white><off_hand>%</white>\n  Potion effects: <white><potion>%</white>\n  Other: <white><other>%</white>\nBoost items: <white>x<boost_multiplier></white>\nFinal multiplier: <white>x<multiplier></white>\nBefore cap: <white><boosted_chance>%",
+
+  "boost.usage": "<red>/abt [duration in seconds] [percentage]",
+  "boost.used": "<gold>[Boost] </gold><white><bold><player></bold></white><light_purple><bold> used a </bold></light_purple><white><bold><percentage>%</bold></white><light_purple><bold> boost!</bold></light_purple><gray> (<minutes> min)",
+  "boost.current": "<gold>[Boost] </gold><light_purple>The current boost is </light_purple><white><bold>x<multiplier></bold></white><light_purple>!",
+  "boost.expired": "<gold>[Boost] </gold><light_purple>A </light_purple><white><percentage>%</white><light_purple> boost has expired.",
+  "boost.cap": "<red>You cannot use this boost because the boost multiplier would exceed x3.",
+  "boost.status": "<dark_aqua>The drop boost is currently <white><bold>x<multiplier></bold></white>!",
+  "boost.remaining": "<red><minutes>m <seconds>s</red><gold> left: </gold><green><bold>+<percentage>%",
+
+  "boost_item.usage": "<red>Usage: /giveboostitem \\<player> \\<duration in minutes> \\<percentage> [amount] [owner]",
+  "boost_item.player_not_found": "<red>Player not found.",
+  "boost_item.name": "<dark_aqua>Drop Boost Scroll <white><minutes> min x<multiplier>",
+  "boost_item.lore": "<gold> - How to use -\n<dark_aqua>Left click in the air to activate the drop boost\n<dark_aqua>Duration: <white><bold><minutes> min\n<dark_aqua>Drop boost: <white><bold>x<multiplier></bold></white> <gray>(+<percentage>%)\n \n<light_purple>Owned by <player>\n<red><bold>[ Untradeable ]\n \n<gray>This item does not stack with separately purchased boosts.\n<dark_gray>[Soulbound: <uuid>]",
+
+  "gui.min_stash.title": "Minimum stash rarity",
+  "gui.close": "<red>Close",
+
+  "eval.error": "<red><error>"
+}
