@@ -9,3 +9,6 @@ username: username
 password: password
 
 minimumStashRarityDefault: rare
+
+# Default language used for the console and players whose client language has no translation (files in plugins/MMLuck/lang/)
+language: ja_jp

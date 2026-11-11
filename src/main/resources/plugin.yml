@@ -7,6 +7,8 @@ depend:
   - MythicMobs
   - Rarity
   - StorageBox
+softdepend:
+  - ItemStash
 
 commands:
   mmluckeval:
@@ -15,12 +17,12 @@ commands:
     description: MythicLuckの基本コマンド。
     aliases: [mlg, mythiclg, mythicluckg, mlgive]
     permission: MMLuck.mlg
-    usage: エラー。/mlg プレイヤー名 アイテム名 確率 個数 レアドロップ時の表示の有無 で使用できます。
+    usage: エラー。/mlg プレイヤー名 アイテム名 個数 確率 [レアドロップ表示の最低レアリティ] で使用できます。
   mythicluckgiveoverflow:
     description: MythicLuckの基本コマンド。
     aliases: [mlgo, mythiclgo, mythicluckgo, mlgiveo,mlgoverflow]
     permission: MMLuck.mlgo
-    usage: エラー。/mlgo プレイヤー名 アイテム名 確率 個数 レアドロップ時の表示の有無 で使用できます。
+    usage: エラー。/mlgo プレイヤー名 アイテム名 個数 確率 [レアドロップ表示の最低レアリティ] で使用できます。
   addboosttime:
     description: ドロップ率ブーストを追加。
     aliases: [abt]
@@ -38,6 +40,9 @@ commands:
   mythiclucksilent:
     aliases: [mls, mythicls, mythiclucks, mmlucksilent]
     permission: MMLuck.mls
+  mythicluckverbose:
+    aliases: [mlverbose, mlv]
+    permission: MMLuck.mlv
   mythicluckstash:
     aliases: [mlstash]
     permission: mmluck.mlstash
@@ -57,6 +62,7 @@ permissions:
       MMLuck.abt: true
       MMLuck.broadcastboost: true
       MMLuck.checkboost: true
+      MMLuck.mlv: true
       mmluck.giveboostitem: true
   MMLuck.mlg:
     description: Allows you to use /mlg command.
@@ -75,6 +81,9 @@ permissions:
     default: false
   MMLuck.mls:
     description: "Allows you to use /mls command."
+    default: true
+  MMLuck.mlv:
+    description: "Allows you to use /mlverbose command."
     default: true
   mmluck.giveboostitem:
     description: "Allows you to use /giveboostitem command."

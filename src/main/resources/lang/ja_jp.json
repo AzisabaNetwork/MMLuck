@@ -1,0 +1,55 @@
+{
+  "common.player_only": "<red>このコマンドはプレイヤーのみ実行できます。",
+  "common.console_not_allowed": "<red>コンソールからは実行できません。",
+  "common.enabled": "<green>有効",
+  "common.disabled": "<red>無効",
+
+  "number.group_digits": "4",
+  "number.suffixes": ",万,億,兆,京,垓,𥝱,穣,溝,澗,正,載,極,恒河沙,阿僧祇,那由他,不可思議,無量大数",
+  "odds": "<value>分の1",
+
+  "give.invalid_args": "<red>正常な引数を渡してください。",
+  "give.player_offline": "<red><player>は現在ログインしていません。",
+  "give.invalid_amount": "<red>個数は0以上の整数で指定してください: <value>",
+  "give.invalid_chance": "<red>確率は0以上の小数で指定してください: <value>",
+  "give.invalid_rarity": "<red>レアリティが見つかりません: <value>",
+  "give.chance": "<dark_aqua>アイテムドロップ確率 ： <chance>% (<odds>)     ブースト倍率 : <white><bold><multiplier>倍",
+  "give.chance_simple": "<dark_aqua>アイテムドロップ確率 ： <chance>%     ブースト倍率 : <white><bold><multiplier>倍",
+
+  "item.not_found": "<red>アイテムが見つかりません:<id>",
+  "drop.rare": "<rarity_color><bold>レアドロップ！ </bold></rarity_color><item><gray> (x<amount>) </gray><aqua>(✦ +<boost>% ブースト)",
+  "drop.super_rare": "<rarity_color><bold>激レアドロップ！ </bold></rarity_color><item><gray> (x<amount>) </gray><aqua>(✦ +<boost>% ブースト)",
+  "drop.obtained": "<gold>[MMLuck] </gold><yellow><item></yellow><gray> (x<amount>)</gray><green>を獲得しました。",
+  "drop.obtained_none": "<gray>[MMLuck] <item><dark_gray> (x<amount>)</dark_gray>を獲得しました。",
+
+  "stash.added": "<yellow><amount></yellow><red>個のアイテム</red><gray>(<item><gray>)</gray><red>がStashに入りました。",
+  "stash.pickup_hint": "<aqua>/pickupstash</aqua><red>で回収できます。",
+  "stash.mode_enabled": "<green>すべてのドロップがStashに入るようになりました。",
+  "stash.mode_disabled": "<green>通常ドロップモードに切り替えました。",
+
+  "silent.enabled": "<red>アイテム獲得ログを非表示にしました。",
+  "silent.disabled": "<green>アイテム獲得ログを表示するようにしました。",
+
+  "verbose.enabled": "<green>すべてのドロップ抽選ログを表示するようにしました。",
+  "verbose.disabled": "<red>ドロップ抽選ログを非表示にしました。",
+  "verbose.line": "<gold>[MMLuck] </gold><yellow><item></yellow><gray> ×<amount> </gray><dark_gray>— </dark_gray><aqua><chance>%",
+  "verbose.hover": "<gray>元のドロップ率: <white><original_chance>%</white>\nマルチドロップ: <multi_drop>\nLuck合計: <white><total_luck>%</white>\n  装備: <white><equipment>%</white>\n  メインハンド: <white><main_hand>%</white>\n  オフハンド: <white><off_hand>%</white>\n  ポーションエフェクト: <white><potion>%</white>\n  その他: <white><other>%</white>\nブーストアイテム: <white>x<boost_multiplier></white>\n最終倍率: <white>x<multiplier></white>\n上限適用前: <white><boosted_chance>%",
+
+  "boost.usage": "<red>/abt [効果時間(秒)] [効果レベル(%)]",
+  "boost.used": "<gold>[ブースト] </gold><white><bold><player></bold></white><light_purple><bold>が</bold></light_purple><white><bold><percentage>%</bold></white><light_purple><bold>ブーストを使用しました！</bold></light_purple><gray>(<minutes>分間有効)",
+  "boost.current": "<gold>[ブースト] </gold><light_purple>現在のブースト倍率は</light_purple><white><bold><multiplier></bold></white><light_purple>倍です！",
+  "boost.expired": "<gold>[ブースト] </gold><white><percentage>%</white><light_purple>のブーストが期限切れになりました。",
+  "boost.cap": "<red>使用するとブースト倍率が3倍を超えるため、このブーストは使用できません。",
+  "boost.status": "<dark_aqua>現在ドロップブースト倍率が <white><bold><multiplier>倍</bold></white>になっています！",
+  "boost.remaining": "<gold>あと</gold><red><minutes>分<seconds>秒</red><gold>: </gold><green><bold>+<percentage>%",
+
+  "boost_item.usage": "<red>使い方: /giveboostitem \\<プレイヤー> \\<効果時間(分)> \\<効果レベル(%)> [個数] [所有者]",
+  "boost_item.player_not_found": "<red>プレイヤーが見つかりません。",
+  "boost_item.name": "<dark_aqua>ドロップ率上昇スクロール <white><minutes>分<multiplier>倍",
+  "boost_item.lore": "<gold> - 使い方 -\n<dark_aqua>空中で左クリックでドロップ率ブーストを発動\n<dark_aqua>効果時間： <white><bold><minutes>分\n<dark_aqua>ドロップ上昇率： <white><bold><multiplier>倍</bold></white> <gray>(+<percentage>%)\n \n<light_purple><player> 専用\n<red><bold>【 取引禁止 】\n \n<gray>このアイテムは別で購入したブーストとスタックできません。\n<dark_gray>[Soulbound: <uuid>]",
+
+  "gui.min_stash.title": "Stashに入れる最低レアリティ",
+  "gui.close": "<red>閉じる",
+
+  "eval.error": "<red><error>"
+}
